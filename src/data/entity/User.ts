@@ -1,16 +1,25 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { BaseEntity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Notification } from './Notification'
 
-@Entity()
-export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: number
+export abstract class User extends BaseEntity {
+    @Column()
+    firstname: string
 
     @Column()
-    firstName: string
+    lastname: string
 
     @Column()
-    lastName: string
+    phone: number
+
+    @Column({ unique: true })
+    email: string
 
     @Column()
-    age: number
+    password: string
+
+    @Column()
+    role: string
+
+    @OneToMany(() => Notification, (notification) => notification.user)
+    notifications: Notification[]
 }
