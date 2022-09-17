@@ -21,7 +21,7 @@ export class Student extends User {
     comments: Comment[]
 
     @OneToMany(() => Scoring, (scoring) => scoring.student)
-    scoring: Scoring[]
+    scorings: Scoring[]
 
     @ManyToMany(() => Course, (course) => course.students)
     courses: Course[]

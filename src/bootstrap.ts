@@ -1,17 +1,29 @@
 import { AppDataSource } from './data/data-source'
-import { User } from './data/entity/User'
+import { Student } from './data/entity/Student'
 
 export const Bootstrap = async () => {
-    const userRepository = AppDataSource.getRepository(User)
-    const user = userRepository.create({
-        firstName: 'Ale',
-        lastName: 'Joaquin',
-        age: 26,
+    const date = new Date(1996, 7, 5)
+
+    const studentRepository = AppDataSource.getRepository(Student)
+    const student = studentRepository.create({
+        firstname: 'ale',
+        lastname: 'joaquin',
+        phone: 123,
+        email: 'mail',
+        password: 'pass',
+        role: 'role',
+        notifications: [],
+        birthday: date,
+        educationalDegrees: [],
+        comments: [],
+        scorings: [],
+        courseRequests: [],
+        courses: [],
     })
 
-    await userRepository.save(user).catch((err) => {
+    await studentRepository.save(student).catch((err) => {
         console.log('Error: ', err)
     })
 
-    console.log('New user saved', user)
+    console.log('New student saved', student)
 }

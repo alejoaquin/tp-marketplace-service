@@ -1,13 +1,12 @@
 import {
-    BaseEntity,
     Column,
-    Double,
     Entity,
     JoinTable,
     ManyToMany,
     ManyToOne,
     OneToMany,
 } from 'typeorm'
+import { BaseEntity } from './BaseEntity'
 import { Comment } from './Comment'
 import { CourseRequest } from './CourseRequest'
 import { Professor } from './Professor'
@@ -29,7 +28,7 @@ export class Course extends BaseEntity {
     frecuency: string
 
     @Column()
-    cost: Double
+    cost: number
 
     @Column()
     description: string
