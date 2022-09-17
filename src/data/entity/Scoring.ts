@@ -7,7 +7,7 @@ export class Scoring extends BaseEntity {
     @Column()
     score: number
 
-    @ManyToOne(() => Student, (student) => student.studies)
+    @ManyToOne(() => Student, (student) => student.scoring)
     student: Student
 
     @ManyToOne(() => Course, (course) => course.scorings)

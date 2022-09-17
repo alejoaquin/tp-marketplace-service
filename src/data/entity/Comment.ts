@@ -10,7 +10,7 @@ export class Comment extends BaseEntity {
     @Column()
     status: string
 
-    @ManyToOne(() => Student, (student) => student.studies)
+    @ManyToOne(() => Student, (student) => student.comments)
     student: Student
 
     @Column()

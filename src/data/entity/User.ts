@@ -1,6 +1,7 @@
-import { BaseEntity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, OneToMany } from 'typeorm'
 import { Notification } from './Notification'
 
+@Entity()
 export abstract class User extends BaseEntity {
     @Column()
     firstname: string
