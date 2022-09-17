@@ -12,6 +12,6 @@ export class Education extends BaseEntity {
     @Column()
     description: string
 
-    @ManyToOne(() => Student, (student) => student.studies)
+    @ManyToOne(() => Student, (student) => student.educationalDegrees)
     student: Student
 }

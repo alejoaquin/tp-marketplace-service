@@ -11,11 +11,8 @@ export class Student extends User {
     @Column()
     birthday: Date
 
-    @Column()
-    courses: string[]
-
     @OneToMany(() => Education, (education) => education.student)
-    studies: Education[]
+    educationalDegrees: Education[]
 
     @OneToMany(() => CourseRequest, (requests) => requests.student)
     courseRequests: CourseRequest[]
@@ -27,5 +24,5 @@ export class Student extends User {
     scoring: Scoring[]
 
     @ManyToMany(() => Course, (course) => course.students)
-    course: Course[]
+    courses: Course[]
 }
