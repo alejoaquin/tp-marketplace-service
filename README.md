@@ -1,5 +1,31 @@
-# tp-marketplace-service
+## Installation
 
-Steps to run this project:
+```bash
+$ npm install
+```
 
-1. Run `npm start` command
+## Running the app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
