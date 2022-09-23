@@ -1,28 +1,28 @@
 import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
-import { Comment } from './comment.entity';
-import { Course } from './course.entity';
-import { CourseRequest } from './course.request.entity';
-import { Education } from './education.entity';
-import { Scoring } from './scoring.entity';
-import { User } from './user.abstract.entity';
+import { CommentEntity } from './comment.entity';
+import { CourseEntity } from './course.entity';
+import { CourseRequestEntity } from './course.request.entity';
+import { EducationEntity } from './education.entity';
+import { ScoringEntity } from './scoring.entity';
+import { UserEntity } from './user.abstract.entity';
 
 @Entity()
-export class Student extends User {
+export class StudentEntity extends UserEntity {
     @Column()
     birthday: Date;
 
-    @OneToMany(() => Education, (education) => education.student)
-    educationalDegrees: Education[];
+    @OneToMany(() => EducationEntity, (education) => education.student)
+    educationalDegrees: EducationEntity[];
 
-    @OneToMany(() => CourseRequest, (requests) => requests.student)
-    courseRequests: CourseRequest[];
+    @OneToMany(() => CourseRequestEntity, (requests) => requests.student)
+    courseRequests: CourseRequestEntity[];
 
-    @OneToMany(() => Comment, (comment) => comment.student)
-    comments: Comment[];
+    @OneToMany(() => CommentEntity, (comment) => comment.student)
+    comments: CommentEntity[];
 
-    @OneToMany(() => Scoring, (scoring) => scoring.student)
-    scorings: Scoring[];
+    @OneToMany(() => ScoringEntity, (scoring) => scoring.student)
+    scorings: ScoringEntity[];
 
-    @ManyToMany(() => Course, (course) => course.students)
-    courses: Course[];
+    @ManyToMany(() => CourseEntity, (course) => course.students)
+    courses: CourseEntity[];
 }

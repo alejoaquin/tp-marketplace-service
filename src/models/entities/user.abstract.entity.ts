@@ -1,8 +1,8 @@
 import { Column, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { Notification } from './notification.entity';
+import { NotificationEntity } from './notification.entity';
 
-export abstract class User extends BaseEntity {
+export abstract class UserEntity extends BaseEntity {
     @Column()
     firstname: string;
 
@@ -21,6 +21,6 @@ export abstract class User extends BaseEntity {
     @Column()
     role: string;
 
-    @OneToMany(() => Notification, (notification) => notification.user)
-    notifications: Notification[];
+    @OneToMany(() => NotificationEntity, (notification) => notification.user)
+    notifications: NotificationEntity[];
 }

@@ -1,15 +1,15 @@
 import { Column, Entity, OneToMany } from 'typeorm';
-import { Course } from './course.entity';
-import { User } from './user.abstract.entity';
+import { CourseEntity } from './course.entity';
+import { UserEntity } from './user.abstract.entity';
 
 @Entity()
-export class Professor extends User {
+export class ProfessorEntity extends UserEntity {
     @Column()
     title: string;
 
     @Column()
     experience: string;
 
-    @OneToMany(() => Course, (course) => course.professor)
-    courses: Course[];
+    @OneToMany(() => CourseEntity, (course) => course.professor)
+    courses: CourseEntity[];
 }

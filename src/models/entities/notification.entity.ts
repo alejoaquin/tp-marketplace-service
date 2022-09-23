@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { User } from './user.abstract.entity';
+import { UserEntity } from './user.abstract.entity';
 
 @Entity()
-export class Notification extends BaseEntity {
+export class NotificationEntity extends BaseEntity {
     @Column()
     source: string;
 
@@ -13,6 +13,6 @@ export class Notification extends BaseEntity {
     @Column()
     description: string;
 
-    @ManyToOne(() => User, (user) => user.notifications)
-    user: User;
+    @ManyToOne(() => UserEntity, (user) => user.notifications)
+    user: UserEntity;
 }

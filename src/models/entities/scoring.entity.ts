@@ -1,16 +1,16 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { Course } from './course.entity';
-import { Student } from './student.entity';
+import { CourseEntity } from './course.entity';
+import { StudentEntity } from './student.entity';
 
 @Entity()
-export class Scoring extends BaseEntity {
+export class ScoringEntity extends BaseEntity {
     @Column()
     score: number;
 
-    @ManyToOne(() => Student, (student) => student.scorings)
-    student: Student;
+    @ManyToOne(() => StudentEntity, (student) => student.scorings)
+    student: StudentEntity;
 
-    @ManyToOne(() => Course, (course) => course.scorings)
-    course: Course;
+    @ManyToOne(() => CourseEntity, (course) => course.scorings)
+    course: CourseEntity;
 }

@@ -7,14 +7,14 @@ import {
     OneToMany,
 } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { Comment } from './comment.entity';
-import { CourseRequest } from './course.request.entity';
-import { Professor } from './professor.entity';
-import { Scoring } from './scoring.entity';
-import { Student } from './student.entity';
+import { CommentEntity } from './comment.entity';
+import { CourseRequestEntity } from './course.request.entity';
+import { ProfessorEntity } from './professor.entity';
+import { ScoringEntity } from './scoring.entity';
+import { StudentEntity } from './student.entity';
 
 @Entity()
-export class Course extends BaseEntity {
+export class CourseEntity extends BaseEntity {
     @Column()
     name: string;
 
@@ -42,19 +42,22 @@ export class Course extends BaseEntity {
     @Column()
     score: number;
 
-    @ManyToOne(() => Professor, (professor) => professor.courses)
-    professor: Professor;
+    @ManyToOne(() => ProfessorEntity, (professor) => professor.courses)
+    professor: ProfessorEntity;
 
-    @OneToMany(() => CourseRequest, (courseRequest) => courseRequest.course)
-    courseRequests: CourseRequest[];
+    @OneToMany(
+        () => CourseRequestEntity,
+        (courseRequest) => courseRequest.course,
+    )
+    courseRequests: CourseRequestEntity[];
 
-    @OneToMany(() => Scoring, (scoring) => scoring.course)
-    scorings: Scoring[];
+    @OneToMany(() => ScoringEntity, (scoring) => scoring.course)
+    scorings: ScoringEntity[];
 
-    @OneToMany(() => Comment, (comment) => comment.course)
-    comments: Comment[];
+    @OneToMany(() => CommentEntity, (comment) => comment.course)
+    comments: CommentEntity[];
 
-    @ManyToMany(() => Student, (student) => student.courses)
+    @ManyToMany(() => StudentEntity, (student) => student.courses)
     @JoinTable()
-    students: Student[];
+    students: StudentEntity[];
 }

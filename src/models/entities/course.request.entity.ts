@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
-import { Course } from './course.entity';
-import { Student } from './student.entity';
+import { CourseEntity } from './course.entity';
+import { StudentEntity } from './student.entity';
 
 @Entity()
-export class CourseRequest extends BaseEntity {
+export class CourseRequestEntity extends BaseEntity {
     @Column()
     email: string;
 
@@ -20,9 +20,9 @@ export class CourseRequest extends BaseEntity {
     @Column()
     status: string;
 
-    @ManyToOne(() => Student, (student) => student.courseRequests)
-    student: Student;
+    @ManyToOne(() => StudentEntity, (student) => student.courseRequests)
+    student: StudentEntity;
 
-    @ManyToOne(() => Course, (course) => course.courseRequests)
-    course: Course;
+    @ManyToOne(() => CourseEntity, (course) => course.courseRequests)
+    course: CourseEntity;
 }
