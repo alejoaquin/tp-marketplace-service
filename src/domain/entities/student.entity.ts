@@ -3,6 +3,7 @@ import { CommentEntity } from './comment.entity';
 import { CourseEntity } from './course.entity';
 import { CourseRequestEntity } from './course.request.entity';
 import { EducationEntity } from './education.entity';
+import { NotificationEntity } from './notification.entity';
 import { ScoringEntity } from './scoring.entity';
 import { UserEntity } from './user.abstract.entity';
 
@@ -25,4 +26,26 @@ export class StudentEntity extends UserEntity {
 
     @ManyToMany(() => CourseEntity, (course) => course.students)
     courses: CourseEntity[];
+
+    constructor(
+        id: string,
+        firstname: string,
+        lastname: string,
+        phone: number,
+        email: string,
+        password: string,
+        role: string,
+        notifications: NotificationEntity[],
+    ) {
+        super(
+            id,
+            firstname,
+            lastname,
+            phone,
+            email,
+            password,
+            role,
+            notifications,
+        );
+    }
 }

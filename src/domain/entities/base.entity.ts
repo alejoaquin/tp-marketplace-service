@@ -2,5 +2,9 @@ import { PrimaryGeneratedColumn } from 'typeorm';
 
 export abstract class BaseEntity {
     @PrimaryGeneratedColumn('uuid')
-    id: number;
+    id: string;
+
+    constructor(id: string) {
+        this.id = id;
+    }
 }
