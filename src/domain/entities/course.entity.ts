@@ -5,8 +5,8 @@ import {
     ManyToMany,
     ManyToOne,
     OneToMany,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseEntity } from './base.entity';
 import { CommentEntity } from './comment.entity';
 import { CourseRequestEntity } from './course.request.entity';
 import { ProfessorEntity } from './professor.entity';
@@ -14,7 +14,10 @@ import { ScoringEntity } from './scoring.entity';
 import { StudentEntity } from './student.entity';
 
 @Entity()
-export class CourseEntity extends BaseEntity {
+export class CourseEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
     @Column()
     name: string;
 

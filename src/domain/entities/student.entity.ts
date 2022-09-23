@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToMany, OneToMany } from 'typeorm';
+import {
+    Column,
+    Entity,
+    ManyToMany,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CommentEntity } from './comment.entity';
 import { CourseEntity } from './course.entity';
 import { CourseRequestEntity } from './course.request.entity';
@@ -9,6 +15,9 @@ import { UserEntity } from './user.abstract.entity';
 
 @Entity()
 export class StudentEntity extends UserEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
     @Column()
     birthday: Date;
 
@@ -28,7 +37,6 @@ export class StudentEntity extends UserEntity {
     courses: CourseEntity[];
 
     constructor(
-        id: string,
         firstname: string,
         lastname: string,
         phone: number,
@@ -37,15 +45,6 @@ export class StudentEntity extends UserEntity {
         role: string,
         notifications: NotificationEntity[],
     ) {
-        super(
-            id,
-            firstname,
-            lastname,
-            phone,
-            email,
-            password,
-            role,
-            notifications,
-        );
+        super(firstname, lastname, phone, email, password, role, notifications);
     }
 }

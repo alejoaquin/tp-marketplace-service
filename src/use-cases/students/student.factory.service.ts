@@ -3,10 +3,9 @@ import { StudentDto } from 'src/domain';
 import { StudentEntity } from 'src/domain';
 
 @Injectable()
-export class StudentService {
-    createNewStudent(studentDto: StudentDto) {
+export class StudentFactoryService {
+    createNewStudent(studentDto: StudentDto): StudentEntity {
         const newStudent = new StudentEntity(
-            studentDto.id,
             studentDto.firstname,
             studentDto.lastname,
             studentDto.phone,
@@ -25,13 +24,3 @@ export class StudentService {
         return newStudent;
     }
 }
-
-/*
-createNewAuthor(createAuthorDto: CreateAuthorDto) {
-    const newAuthor = new Author();
-    newAuthor.firstName = createAuthorDto.firstName;
-    newAuthor.lastName = createAuthorDto.lastName;
-
-    return newAuthor;
-  }
-  */

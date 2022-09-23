@@ -1,9 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { BaseEntity } from './base.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from './user.abstract.entity';
 
 @Entity()
-export class NotificationEntity extends BaseEntity {
+export class NotificationEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
     @Column()
     source: string;
 

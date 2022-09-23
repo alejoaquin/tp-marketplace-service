@@ -1,10 +1,8 @@
 import { Column, OneToMany } from 'typeorm';
-import { BaseEntity } from './base.entity';
 import { NotificationEntity } from './notification.entity';
 
-export abstract class UserEntity extends BaseEntity {
+export abstract class UserEntity {
     constructor(
-        id: string,
         firstname: string,
         lastname: string,
         phone: number,
@@ -13,7 +11,6 @@ export abstract class UserEntity extends BaseEntity {
         role: string,
         notifications: NotificationEntity[],
     ) {
-        super(id);
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;

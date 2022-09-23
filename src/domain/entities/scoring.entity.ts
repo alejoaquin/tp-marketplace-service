@@ -1,10 +1,12 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { BaseEntity } from './base.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CourseEntity } from './course.entity';
 import { StudentEntity } from './student.entity';
 
 @Entity()
-export class ScoringEntity extends BaseEntity {
+export class ScoringEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
     @Column()
     score: number;
 

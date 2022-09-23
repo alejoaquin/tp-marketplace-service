@@ -1,9 +1,11 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { BaseEntity } from './base.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { StudentEntity } from './student.entity';
 
 @Entity()
-export class EducationEntity extends BaseEntity {
+export class EducationEntity {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
     @Column()
     degree: string;
 
