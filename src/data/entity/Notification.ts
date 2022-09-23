@@ -1,18 +1,18 @@
-import { Column, Entity, ManyToOne } from 'typeorm'
-import { BaseEntity } from './BaseEntity'
-import { User } from './User'
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { BaseEntity } from './BaseEntity';
+import { User } from './User';
 
 @Entity()
 export class Notification extends BaseEntity {
-    @Column()
-    source: string
+  @Column()
+  source: string;
 
-    @Column()
-    sourceType: string
+  @Column()
+  sourceType: string;
 
-    @Column()
-    description: string
+  @Column()
+  description: string;
 
-    @ManyToOne(() => User, (user) => user.notifications)
-    user: User
+  @ManyToOne(() => User, (user) => user.notifications)
+  user: User;
 }
