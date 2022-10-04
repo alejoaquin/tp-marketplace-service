@@ -1,5 +1,3 @@
-import { NotificationDto } from './notification.dto';
-
 export abstract class UserDto {
     constructor(
         id: string,
@@ -9,7 +7,6 @@ export abstract class UserDto {
         email: string,
         password: string,
         role: string,
-        notifications: NotificationDto[],
     ) {
         this.id = id;
         this.firstname = firstname;
@@ -18,7 +15,6 @@ export abstract class UserDto {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.notifications = notifications;
     }
 
     id: string;
@@ -34,6 +30,4 @@ export abstract class UserDto {
     password: string;
 
     role: string;
-
-    notifications: NotificationDto[];
 }

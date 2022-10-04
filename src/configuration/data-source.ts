@@ -4,16 +4,15 @@ import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOpti
 const config: MysqlConnectionOptions = {
     type: 'mysql',
     host: 'localhost',
-    port: 3306,
     username: 'root',
     password: 'admin123',
     database: 'db_marketplace',
     migrationsTableName: 'migrations',
     synchronize: true,
     logging: false,
-    entities: ['src/domain/entities/**/*.entity.ts'],
-    migrations: ['src/configuration/migrations/**/*.ts'],
-    subscribers: ['src/data/subscriber/**/*.ts'],
+    entities: ['dist/domain/entities/*.entity.{ts,js}'],
+    migrations: ['dist/domain/migration/*.js'],
+    subscribers: ['dist/domain/subscriber/*.js'],
 };
 
 export default config;

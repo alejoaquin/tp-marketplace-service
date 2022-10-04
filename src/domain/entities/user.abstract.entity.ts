@@ -1,5 +1,4 @@
-import { Column, OneToMany } from 'typeorm';
-import { NotificationEntity } from './notification.entity';
+import { Column } from 'typeorm';
 
 export abstract class UserEntity {
     constructor(
@@ -9,7 +8,6 @@ export abstract class UserEntity {
         email: string,
         password: string,
         role: string,
-        notifications: NotificationEntity[],
     ) {
         this.firstname = firstname;
         this.lastname = lastname;
@@ -17,7 +15,6 @@ export abstract class UserEntity {
         this.email = email;
         this.password = password;
         this.role = role;
-        this.notifications = notifications;
     }
 
     @Column()
@@ -37,7 +34,4 @@ export abstract class UserEntity {
 
     @Column()
     role: string;
-
-    @OneToMany(() => NotificationEntity, (notification) => notification.user)
-    notifications: NotificationEntity[];
 }

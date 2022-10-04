@@ -1,35 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AppService } from './app.service';
 import config from './configuration/data-source';
 import { AppController } from './controllers/app.controller';
-import {
-    CommentEntity,
-    CourseEntity,
-    CourseRequestEntity,
-    EducationEntity,
-    NotificationEntity,
-    ProfessorEntity,
-    ScoringEntity,
-    StudentEntity,
-    UserEntity,
-} from './domain';
-import { AppService } from './use-cases/app.service';
+import { StudentsModule } from './services/students/students.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRoot(config),
-        TypeOrmModule.forFeature([
-            CommentEntity,
-            CourseEntity,
-            CourseRequestEntity,
-            EducationEntity,
-            NotificationEntity,
-            ProfessorEntity,
-            ScoringEntity,
-            StudentEntity,
-            UserEntity,
-        ]),
-    ],
+    imports: [TypeOrmModule.forRoot(config), StudentsModule],
     controllers: [AppController],
     providers: [AppService],
 })

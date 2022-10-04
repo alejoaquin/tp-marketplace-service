@@ -3,14 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from 'src/domain';
 import { Repository } from 'typeorm';
 import { StudentDto } from 'src/domain';
-import { StudentFactoryService } from './student-factory.service';
+import { StudentsFactoryService } from './students-factory.service';
 
 @Injectable()
-export class StudentUseCase {
+export class StudentsService {
     constructor(
         @InjectRepository(StudentEntity)
         private studentsRepository: Repository<StudentEntity>,
-        private studentFactoryService: StudentFactoryService,
+        private studentFactoryService: StudentsFactoryService,
     ) {}
 
     getAll(): Promise<StudentEntity[]> {
