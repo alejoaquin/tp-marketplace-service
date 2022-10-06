@@ -1,4 +1,4 @@
-export abstract class UserDto {
+export class UserDto {
     constructor(
         id: string,
         firstname: string,

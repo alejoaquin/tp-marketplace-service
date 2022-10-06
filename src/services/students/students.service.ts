@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StudentEntity } from 'src/domain';
+import { StudentDto, StudentEntity } from 'src/domain';
 import { Repository } from 'typeorm';
-import { StudentDto } from 'src/domain';
 import { StudentsFactoryService } from './students-factory.service';
 
 @Injectable()
@@ -13,43 +12,52 @@ export class StudentsService {
         private studentFactoryService: StudentsFactoryService,
     ) {}
 
-    getAll(): Promise<StudentEntity[]> {
-        return this.studentsRepository.find();
+    async getAll(): Promise<StudentDto[]> {
+        return await this.studentsRepository
+            .find()
+            .then((entities) =>
+                entities.map((entity) =>
+                    this.studentFactoryService.toDto(entity),
+                ),
+            );
     }
 
-    async getById(id: string): Promise<StudentEntity> {
+    async getById(id: string): Promise<StudentDto> {
         try {
-            const student = await this.studentsRepository.findOneByOrFail({
-                id: id,
-            });
-            return student;
+            return this.toDto(
+                this.studentsRepository.findOneByOrFail({ id: id }),
+            );
         } catch (err) {
             //handle error
             throw err;
         }
     }
 
-    create(student: StudentDto): Promise<StudentEntity> {
+    async create(student: StudentDto): Promise<StudentDto> {
         try {
             const newStudent = this.studentsRepository.create(
-                this.studentFactoryService.createNewStudent(student),
+                this.studentFactoryService.toEntity(student),
             );
-            return this.studentsRepository.save(newStudent);
+            return this.toDto(this.studentsRepository.save(newStudent));
         } catch (err) {
             //handle error
             throw err;
         }
     }
 
-    update(id: string, student: StudentDto): Promise<StudentEntity> {
-        const studentUpdated =
-            this.studentFactoryService.createNewStudent(student);
+    update(id: string, student: StudentDto): Promise<StudentDto> {
+        const studentUpdated = this.studentFactoryService.toDto(student);
         studentUpdated.id = id;
-        return this.studentsRepository.save(studentUpdated);
+        return this.toDto(this.studentsRepository.save(studentUpdated));
     }
 
-    async delete(id: string): Promise<StudentEntity> {
+    async delete(id: string): Promise<StudentDto> {
         const student = await this.getById(id);
-        return this.studentsRepository.remove(student);
+        return this.toDto(this.studentsRepository.remove(student).then());
+    }
+
+    async toDto(entity: Promise<StudentEntity>): Promise<StudentDto> {
+        const value = await entity;
+        return this.studentFactoryService.toDto(value);
     }
 }

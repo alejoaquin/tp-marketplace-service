@@ -1,2 +1,2 @@
 export * from './student.dto';
-export * from './user.abstract.dto';
+export * from './user.dto';

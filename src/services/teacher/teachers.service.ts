@@ -32,7 +32,7 @@ export class TeachersService {
     create(teacher: TeacherDto): Promise<TeacherEntity> {
         try {
             const newTeacher = this.teachersRepository.create(
-                this.teachersFactoryService.createNewTeacher(teacher),
+                this.teachersFactoryService.toEntity(teacher),
             );
             return this.teachersRepository.save(newTeacher);
         } catch (err) {
@@ -42,8 +42,7 @@ export class TeachersService {
     }
 
     update(id: string, teacher: TeacherDto): Promise<TeacherEntity> {
-        const teacherUpdated =
-            this.teachersFactoryService.createNewTeacher(teacher);
+        const teacherUpdated = this.teachersFactoryService.toEntity(teacher);
         teacherUpdated.id = id;
         return this.teachersRepository.save(teacherUpdated);
     }

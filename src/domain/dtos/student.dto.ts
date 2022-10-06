@@ -1,4 +1,4 @@
-import { UserDto } from './user.abstract.dto';
+import { UserDto } from './user.dto';
 
 export class StudentDto extends UserDto {
     constructor(
