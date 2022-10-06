@@ -29,10 +29,10 @@ export class TeachersService {
         }
     }
 
-    create(student: TeacherDto): Promise<TeacherEntity> {
+    create(teacher: TeacherDto): Promise<TeacherEntity> {
         try {
             const newTeacher = this.teachersRepository.create(
-                this.teachersFactoryService.createNewTeacher(student),
+                this.teachersFactoryService.createNewTeacher(teacher),
             );
             return this.teachersRepository.save(newTeacher);
         } catch (err) {
@@ -41,15 +41,15 @@ export class TeachersService {
         }
     }
 
-    update(id: string, student: TeacherDto): Promise<TeacherEntity> {
-        const studentUpdated =
-            this.teachersFactoryService.createNewTeacher(student);
-        studentUpdated.id = id;
-        return this.teachersRepository.save(studentUpdated);
+    update(id: string, teacher: TeacherDto): Promise<TeacherEntity> {
+        const teacherUpdated =
+            this.teachersFactoryService.createNewTeacher(teacher);
+        teacherUpdated.id = id;
+        return this.teachersRepository.save(teacherUpdated);
     }
 
     async delete(id: string): Promise<TeacherEntity> {
-        const student = await this.getById(id);
-        return this.teachersRepository.remove(student);
+        const teacher = await this.getById(id);
+        return this.teachersRepository.remove(teacher);
     }
 }
