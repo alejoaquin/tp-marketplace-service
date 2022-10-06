@@ -2,12 +2,18 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { UserEntity } from './user.abstract.entity';
 
 @Entity()
-export class StudentEntity extends UserEntity {
+export class TeacherEntity extends UserEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ nullable: true })
-    birthday: Date;
+    @Column()
+    title: string;
+
+    @Column()
+    experience: string;
+
+    //@OneToMany(() => Course, (course) => course.professor)
+    //courses: Course[];
 
     constructor(
         firstname: string,

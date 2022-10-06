@@ -17,7 +17,7 @@ export class StudentsService {
         return this.studentsRepository.find();
     }
 
-    async getStudentById(id: string): Promise<StudentEntity> {
+    async getById(id: string): Promise<StudentEntity> {
         try {
             const student = await this.studentsRepository.findOneByOrFail({
                 id: id,
@@ -49,7 +49,7 @@ export class StudentsService {
     }
 
     async delete(id: string): Promise<StudentEntity> {
-        const student = await this.getStudentById(id);
+        const student = await this.getById(id);
         return this.studentsRepository.remove(student);
     }
 }

@@ -12,7 +12,6 @@ export class StudentsFactoryService {
             studentDto.password,
             studentDto.role,
         );
-        console.log(studentDto);
         newStudent.birthday = studentDto.birthday;
         return newStudent;
     }
