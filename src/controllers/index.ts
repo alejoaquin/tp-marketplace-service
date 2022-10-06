@@ -1,2 +1,3 @@
 export * from './app.controller';
-export * from './student.controller';
+export * from './students.controller';
+export * from './teachers.controller';

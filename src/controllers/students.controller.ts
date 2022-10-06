@@ -13,7 +13,7 @@ export class StudentController {
 
     @Get(':id')
     async getById(@Param('id') id: any) {
-        return this.studentUseCases.getStudentById(id);
+        return this.studentUseCases.getById(id);
     }
 
     @Post()
