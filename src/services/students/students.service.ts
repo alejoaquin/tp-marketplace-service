@@ -13,16 +13,13 @@ export class StudentsService {
     ) {}
 
     async getAll(): Promise<StudentDto[]> {
-        return await this.studentsRepository
-            .find()
-            .then((entities) =>
-                entities.map((entity) =>
-                    this.studentFactoryService.toDto(entity),
-                ),
-            );
+        const entities = await this.studentsRepository.find();
+        return entities.map((entity) =>
+            this.studentFactoryService.toDto(entity),
+        );
     }
 
-    async getById(id: string): Promise<StudentDto> {
+    getById(id: string): Promise<StudentDto> {
         try {
             return this.toDto(
                 this.studentsRepository.findOneByOrFail({ id: id }),
@@ -33,7 +30,7 @@ export class StudentsService {
         }
     }
 
-    async create(student: StudentDto): Promise<StudentDto> {
+    create(student: StudentDto): Promise<StudentDto> {
         try {
             const newStudent = this.studentsRepository.create(
                 this.studentFactoryService.toEntity(student),

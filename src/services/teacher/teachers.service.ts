@@ -13,16 +13,20 @@ export class TeachersService {
         private teachersFactoryService: TeachersFactoryService,
     ) {}
 
-    getAll(): Promise<TeacherEntity[]> {
-        return this.teachersRepository.find();
+    async getAll(): Promise<TeacherDto[]> {
+        const entities = await this.teachersRepository.find();
+        return entities.map((entity) =>
+            this.teachersFactoryService.toDto(entity),
+        );
     }
 
-    async getById(id: string): Promise<TeacherEntity> {
+    getById(id: string): Promise<TeacherEntity> {
         try {
-            const teacher = await this.teachersRepository.findOneByOrFail({
-                id: id,
-            });
-            return teacher;
+            return this.toDto(
+                this.teachersRepository.findOneByOrFail({
+                    id: id,
+                }),
+            );
         } catch (err) {
             //handle error
             throw err;
@@ -34,7 +38,7 @@ export class TeachersService {
             const newTeacher = this.teachersRepository.create(
                 this.teachersFactoryService.toEntity(teacher),
             );
-            return this.teachersRepository.save(newTeacher);
+            return this.toDto(this.teachersRepository.save(newTeacher));
         } catch (err) {
             //handle error
             throw err;
@@ -44,11 +48,16 @@ export class TeachersService {
     update(id: string, teacher: TeacherDto): Promise<TeacherEntity> {
         const teacherUpdated = this.teachersFactoryService.toEntity(teacher);
         teacherUpdated.id = id;
-        return this.teachersRepository.save(teacherUpdated);
+        return this.toDto(this.teachersRepository.save(teacherUpdated));
     }
 
     async delete(id: string): Promise<TeacherEntity> {
         const teacher = await this.getById(id);
-        return this.teachersRepository.remove(teacher);
+        return this.toDto(this.teachersRepository.remove(teacher));
+    }
+
+    async toDto(entity: Promise<TeacherEntity>): Promise<TeacherDto> {
+        const value = await entity;
+        return this.teachersFactoryService.toDto(value);
     }
 }
