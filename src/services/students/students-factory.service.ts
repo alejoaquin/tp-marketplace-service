@@ -4,7 +4,7 @@ import { StudentDto, StudentEntity } from 'src/domain';
 @Injectable()
 export class StudentsFactoryService {
     toEntity(studentDto: StudentDto): StudentEntity {
-        const studentEntity = new StudentDto(
+        const studentEntity = new StudentEntity(
             studentDto.id,
             studentDto.firstname,
             studentDto.lastname,
