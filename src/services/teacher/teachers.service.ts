@@ -20,44 +20,37 @@ export class TeachersService {
         );
     }
 
-    getById(id: string): Promise<TeacherEntity> {
-        try {
-            return this.toDto(
-                this.teachersRepository.findOneByOrFail({
-                    id: id,
-                }),
-            );
-        } catch (err) {
-            //handle error
-            throw err;
-        }
+    getById(id: string): Promise<TeacherDto> {
+        return this.toDto(this.teachersRepository.findOneBy({ id: id }));
     }
 
-    create(teacher: TeacherDto): Promise<TeacherEntity> {
+    create(teacher: TeacherDto): Promise<TeacherDto> {
         try {
             const newTeacher = this.teachersRepository.create(
                 this.teachersFactoryService.toEntity(teacher),
             );
             return this.toDto(this.teachersRepository.save(newTeacher));
         } catch (err) {
-            //handle error
+            //TODO: handle error
             throw err;
         }
     }
 
-    update(id: string, teacher: TeacherDto): Promise<TeacherEntity> {
+    update(id: string, teacher: TeacherDto): Promise<TeacherDto> {
         const teacherUpdated = this.teachersFactoryService.toEntity(teacher);
         teacherUpdated.id = id;
         return this.toDto(this.teachersRepository.save(teacherUpdated));
     }
 
-    async delete(id: string): Promise<TeacherEntity> {
+    async delete(id: string): Promise<TeacherDto> {
         const teacher = await this.getById(id);
-        return this.toDto(this.teachersRepository.remove(teacher));
+        return teacher
+            ? this.toDto(this.teachersRepository.remove(teacher).then())
+            : null; //TODO: check this
     }
 
     async toDto(entity: Promise<TeacherEntity>): Promise<TeacherDto> {
         const value = await entity;
-        return this.teachersFactoryService.toDto(value);
+        return value ? this.teachersFactoryService.toDto(value) : null;
     }
 }

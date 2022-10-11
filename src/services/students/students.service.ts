@@ -20,14 +20,7 @@ export class StudentsService {
     }
 
     getById(id: string): Promise<StudentDto> {
-        try {
-            return this.toDto(
-                this.studentsRepository.findOneByOrFail({ id: id }),
-            );
-        } catch (err) {
-            //handle error
-            throw err;
-        }
+        return this.toDto(this.studentsRepository.findOneBy({ id: id }));
     }
 
     create(student: StudentDto): Promise<StudentDto> {
@@ -37,7 +30,7 @@ export class StudentsService {
             );
             return this.toDto(this.studentsRepository.save(newStudent));
         } catch (err) {
-            //handle error
+            //TODO: handle error
             throw err;
         }
     }
@@ -50,11 +43,13 @@ export class StudentsService {
 
     async delete(id: string): Promise<StudentDto> {
         const student = await this.getById(id);
-        return this.toDto(this.studentsRepository.remove(student).then());
+        return student
+            ? this.toDto(this.studentsRepository.remove(student).then())
+            : null; //TODO: check this
     }
 
     async toDto(entity: Promise<StudentEntity>): Promise<StudentDto> {
         const value = await entity;
-        return this.studentFactoryService.toDto(value);
+        return value ? this.studentFactoryService.toDto(value) : null;
     }
 }
