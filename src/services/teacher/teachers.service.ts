@@ -45,7 +45,7 @@ export class TeachersService {
     async delete(id: string): Promise<TeacherDto> {
         const teacher = await this.getById(id);
         return teacher
-            ? this.toDto(this.teachersRepository.remove(teacher).then())
+            ? this.toDto(this.teachersRepository.remove(teacher))
             : null; //TODO: check this
     }
 

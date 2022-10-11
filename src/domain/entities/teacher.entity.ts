@@ -3,10 +3,10 @@ import { UserEntity } from './user.abstract.entity';
 
 @Entity()
 export class TeacherEntity extends UserEntity {
-    @Column()
+    @Column({ nullable: true })
     title: string;
 
-    @Column()
+    @Column({ nullable: true })
     experience: string;
 
     constructor(

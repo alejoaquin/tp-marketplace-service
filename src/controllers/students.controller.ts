@@ -1,31 +1,41 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { StudentDto } from 'src/domain';
 import { StudentsService } from 'src/services/students/students.service';
 
 @Controller('students')
 export class StudentController {
-    constructor(private studentUseCases: StudentsService) {}
+    constructor(private studentServices: StudentsService) {}
 
     @Get()
     async getAll() {
-        return this.studentUseCases.getAll();
+        return this.studentServices.getAll();
     }
 
     @Get(':id')
     async getById(@Param('id') id: any) {
-        return this.studentUseCases.getById(id);
+        return this.studentServices.getById(id);
     }
 
     @Post()
-    createAuthor(@Body() studentDto: StudentDto) {
-        return this.studentUseCases.create(studentDto);
+    create(@Body() studentDto: StudentDto) {
+        return this.studentServices.create(studentDto);
     }
 
     @Put(':id')
-    updateAuthor(
-        @Param('id') studenId: string,
-        @Body() studentDto: StudentDto,
-    ) {
-        return this.studentUseCases.update(studenId, studentDto);
+    update(@Param('id') studenId: string, @Body() studentDto: StudentDto) {
+        return this.studentServices.update(studenId, studentDto);
+    }
+
+    @Delete(':id')
+    delete(@Param('id') studenId: string) {
+        return this.studentServices.delete(studenId);
     }
 }
