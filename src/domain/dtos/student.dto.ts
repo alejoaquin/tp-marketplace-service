@@ -1,3 +1,4 @@
+import { Roles } from './role.enum';
 import { UserDto } from './user.dto';
 
 export class StudentDto extends UserDto {
@@ -8,7 +9,7 @@ export class StudentDto extends UserDto {
         phone: number,
         email: string,
         password: string,
-        role: string,
+        role: Roles,
     ) {
         super(id, firstname, lastname, phone, email, password, role);
     }

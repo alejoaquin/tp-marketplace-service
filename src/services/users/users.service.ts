@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserDto } from 'src/domain';
+import { Roles, UserDto } from 'src/domain';
 import { StudentsService } from '../students/students.service';
 import { TeachersService } from '../teacher/teachers.service';
 import { UsersFactoryService } from './users-factory.service';
@@ -31,7 +31,7 @@ export class UsersService {
 
     create(user: UserDto): Promise<UserDto> {
         try {
-            return user.role == 'student'
+            return user.role === Roles.STUDENT_ROLE
                 ? this.studentsService.create(
                       this.usersFactoryService.userDtoToStudentDto(user),
                   )

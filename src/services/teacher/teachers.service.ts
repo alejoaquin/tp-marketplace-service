@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TeacherDto } from 'src/domain/dtos/teacher.dto';
-import { TeacherEntity } from 'src/domain/entities/teacher.entity';
+import { TeacherDto, TeacherEntity } from 'src/domain';
 import { Repository } from 'typeorm';
 import { TeachersFactoryService } from './teachers-factory.service';
 

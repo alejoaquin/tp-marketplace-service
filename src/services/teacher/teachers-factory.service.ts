@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TeacherDto } from 'src/domain/dtos/teacher.dto';
-import { TeacherEntity } from 'src/domain/entities/teacher.entity';
+import { Roles, TeacherDto, TeacherEntity } from 'src/domain';
 
 @Injectable()
 export class TeachersFactoryService {
@@ -27,7 +26,7 @@ export class TeachersFactoryService {
             teacherEntity.phone,
             teacherEntity.email,
             teacherEntity.password,
-            teacherEntity.role,
+            Roles.TEACHER_ROLE,
         );
         teacherDto.experience = teacherEntity.experience;
         teacherDto.title = teacherEntity.title;

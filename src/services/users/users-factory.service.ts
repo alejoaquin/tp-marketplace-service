@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { StudentDto, UserDto } from 'src/domain';
-import { TeacherDto } from 'src/domain/dtos/teacher.dto';
+import { StudentDto, TeacherDto, UserDto } from 'src/domain';
 
 @Injectable()
 export class UsersFactoryService {
