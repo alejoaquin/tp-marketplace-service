@@ -20,7 +20,7 @@ export class StudentController {
     }
 
     @Get(':id')
-    async getById(@Param('id') id: any) {
+    async getById(@Param('id') id: string) {
         return this.studentServices.getById(id);
     }
 
