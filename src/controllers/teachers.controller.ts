@@ -25,20 +25,17 @@ export class TeachersController {
     }
 
     @Post()
-    createAuthor(@Body() teacherDto: TeacherDto) {
-        return this.teachersService.create(teacherDto);
+    create(@Body() teacher: TeacherDto) {
+        return this.teachersService.create(teacher);
     }
 
     @Put(':id')
-    updateAuthor(
-        @Param('id') teacherId: string,
-        @Body() teacherDto: TeacherDto,
-    ) {
-        return this.teachersService.update(teacherId, teacherDto);
+    update(@Param('id') id: string, @Body() teacher: TeacherDto) {
+        return this.teachersService.update(id, teacher);
     }
 
     @Delete(':id')
-    delete(@Param('id') teacherId: string) {
-        return this.teachersService.delete(teacherId);
+    delete(@Param('id') id: string) {
+        return this.teachersService.delete(id);
     }
 }

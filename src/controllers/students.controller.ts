@@ -25,17 +25,17 @@ export class StudentController {
     }
 
     @Post()
-    create(@Body() studentDto: StudentDto) {
-        return this.studentServices.create(studentDto);
+    create(@Body() student: StudentDto) {
+        return this.studentServices.create(student);
     }
 
     @Put(':id')
-    update(@Param('id') studenId: string, @Body() studentDto: StudentDto) {
-        return this.studentServices.update(studenId, studentDto);
+    update(@Param('id') id: string, @Body() student: StudentDto) {
+        return this.studentServices.update(id, student);
     }
 
     @Delete(':id')
-    delete(@Param('id') studenId: string) {
-        return this.studentServices.delete(studenId);
+    delete(@Param('id') id: string) {
+        return this.studentServices.delete(id);
     }
 }
