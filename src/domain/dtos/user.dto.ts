@@ -1,4 +1,6 @@
-export abstract class UserDto {
+import { Roles } from './role.enum';
+
+export class UserDto {
     constructor(
         id: string,
         firstname: string,
@@ -6,7 +8,7 @@ export abstract class UserDto {
         phone: number,
         email: string,
         password: string,
-        role: string,
+        role: Roles,
     ) {
         this.id = id;
         this.firstname = firstname;
@@ -29,5 +31,5 @@ export abstract class UserDto {
 
     password: string;
 
-    role: string;
+    role: Roles;
 }

@@ -1,7 +1,8 @@
-import { Column } from 'typeorm';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export abstract class UserEntity {
     constructor(
+        id: string,
         firstname: string,
         lastname: string,
         phone: number,
@@ -9,6 +10,7 @@ export abstract class UserEntity {
         password: string,
         role: string,
     ) {
+        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.phone = phone;
@@ -16,6 +18,9 @@ export abstract class UserEntity {
         this.password = password;
         this.role = role;
     }
+
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column()
     firstname: string;

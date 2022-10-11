@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { TeacherDto } from 'src/domain/dtos/teacher.dto';
-import { TeacherEntity } from 'src/domain/entities/teacher.entity';
+import { Roles, TeacherDto, TeacherEntity } from 'src/domain';
 
 @Injectable()
 export class TeachersFactoryService {
-    createNewTeacher(teacherDto: TeacherDto): TeacherEntity {
-        const newTeacher = new TeacherEntity(
+    toEntity(teacherDto: TeacherDto): TeacherEntity {
+        const teacherEntity = new TeacherEntity(
+            teacherDto.id,
             teacherDto.firstname,
             teacherDto.lastname,
             teacherDto.phone,
@@ -13,8 +13,23 @@ export class TeachersFactoryService {
             teacherDto.password,
             teacherDto.role,
         );
-        newTeacher.experience = teacherDto.experience;
-        newTeacher.title = teacherDto.title;
-        return newTeacher;
+        teacherEntity.experience = teacherDto.experience;
+        teacherEntity.title = teacherDto.title;
+        return teacherEntity;
+    }
+
+    toDto(teacherEntity: TeacherEntity): TeacherDto {
+        const teacherDto = new TeacherDto(
+            teacherEntity.id,
+            teacherEntity.firstname,
+            teacherEntity.lastname,
+            teacherEntity.phone,
+            teacherEntity.email,
+            teacherEntity.password,
+            Roles.TEACHER_ROLE,
+        );
+        teacherDto.experience = teacherEntity.experience;
+        teacherDto.title = teacherEntity.title;
+        return teacherDto;
     }
 }

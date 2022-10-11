@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TeacherDto } from 'src/domain/dtos/teacher.dto';
-import { TeacherEntity } from 'src/domain/entities/teacher.entity';
+import { TeacherDto, TeacherEntity } from 'src/domain';
 import { Repository } from 'typeorm';
 import { TeachersFactoryService } from './teachers-factory.service';
 
@@ -13,43 +12,44 @@ export class TeachersService {
         private teachersFactoryService: TeachersFactoryService,
     ) {}
 
-    getAll(): Promise<TeacherEntity[]> {
-        return this.teachersRepository.find();
+    async getAll(): Promise<TeacherDto[]> {
+        const entities = await this.teachersRepository.find();
+        return entities.map((entity) =>
+            this.teachersFactoryService.toDto(entity),
+        );
     }
 
-    async getById(id: string): Promise<TeacherEntity> {
-        try {
-            const teacher = await this.teachersRepository.findOneByOrFail({
-                id: id,
-            });
-            return teacher;
-        } catch (err) {
-            //handle error
-            throw err;
-        }
+    getById(id: string): Promise<TeacherDto> {
+        return this.toDto(this.teachersRepository.findOneBy({ id: id }));
     }
 
-    create(teacher: TeacherDto): Promise<TeacherEntity> {
+    create(teacher: TeacherDto): Promise<TeacherDto> {
         try {
             const newTeacher = this.teachersRepository.create(
-                this.teachersFactoryService.createNewTeacher(teacher),
+                this.teachersFactoryService.toEntity(teacher),
             );
-            return this.teachersRepository.save(newTeacher);
+            return this.toDto(this.teachersRepository.save(newTeacher));
         } catch (err) {
-            //handle error
+            //TODO: handle error
             throw err;
         }
     }
 
-    update(id: string, teacher: TeacherDto): Promise<TeacherEntity> {
-        const teacherUpdated =
-            this.teachersFactoryService.createNewTeacher(teacher);
+    update(id: string, teacher: TeacherDto): Promise<TeacherDto> {
+        const teacherUpdated = this.teachersFactoryService.toEntity(teacher);
         teacherUpdated.id = id;
-        return this.teachersRepository.save(teacherUpdated);
+        return this.toDto(this.teachersRepository.save(teacherUpdated));
     }
 
-    async delete(id: string): Promise<TeacherEntity> {
+    async delete(id: string): Promise<TeacherDto> {
         const teacher = await this.getById(id);
-        return this.teachersRepository.remove(teacher);
+        return teacher
+            ? this.toDto(this.teachersRepository.remove(teacher))
+            : null; //TODO: check this
+    }
+
+    async toDto(entity: Promise<TeacherEntity>): Promise<TeacherDto> {
+        const value = await entity;
+        return value ? this.teachersFactoryService.toDto(value) : null;
     }
 }
