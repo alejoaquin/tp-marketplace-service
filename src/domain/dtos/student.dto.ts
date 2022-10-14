@@ -1,3 +1,4 @@
+import { EducationDto } from './education.dto';
 import { Roles } from './role.enum';
 import { UserDto } from './user.dto';
 
@@ -15,4 +16,5 @@ export class StudentDto extends UserDto {
     }
 
     birthday: Date;
+    educationalDegrees: EducationDto[];
 }

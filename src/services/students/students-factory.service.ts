@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Roles, StudentDto, StudentEntity } from 'src/domain';
+import { EducationFactoryService } from './education-factory.service';
 
 @Injectable()
 export class StudentsFactoryService {
+    constructor(private educationFactoryService: EducationFactoryService) {}
+
     toEntity(studentDto: StudentDto): StudentEntity {
         const studentEntity = new StudentEntity(
             studentDto.id,
@@ -14,6 +17,13 @@ export class StudentsFactoryService {
             studentDto.role,
         );
         studentEntity.birthday = studentDto.birthday;
+        studentEntity.educationalDegrees = studentDto.educationalDegrees.map(
+            (dto) => this.educationFactoryService.toEntity(dto),
+        );
+
+        studentEntity.educationalDegrees.forEach(
+            (edu) => (edu.student = studentEntity),
+        );
         return studentEntity;
     }
 
@@ -28,6 +38,9 @@ export class StudentsFactoryService {
             Roles.STUDENT_ROLE,
         );
         studentDto.birthday = studentEntity.birthday;
+        studentDto.educationalDegrees = studentEntity.educationalDegrees.map(
+            (entity) => this.educationFactoryService.toDto(entity),
+        );
         return studentDto;
     }
 }

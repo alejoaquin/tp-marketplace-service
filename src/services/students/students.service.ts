@@ -36,13 +36,13 @@ export class StudentsService {
     }
 
     update(id: string, student: StudentDto): Promise<StudentDto> {
-        const studentUpdated = this.studentFactoryService.toDto(student);
+        const studentUpdated = this.studentFactoryService.toEntity(student);
         studentUpdated.id = id;
         return this.toDto(this.studentsRepository.save(studentUpdated));
     }
 
     async delete(id: string): Promise<StudentDto> {
-        const student = await this.getById(id);
+        const student = await this.studentsRepository.findOneBy({ id: id });
         return student
             ? this.toDto(this.studentsRepository.remove(student))
             : null; //TODO: check this
