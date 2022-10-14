@@ -19,6 +19,9 @@ export class StudentEntity extends UserEntity {
     @Column({ nullable: true })
     birthday: Date;
 
-    @OneToMany(() => EducationEntity, (education) => education.student)
+    @OneToMany(() => EducationEntity, (education) => education.student, {
+        eager: true,
+        cascade: true,
+    })
     educationalDegrees: EducationEntity[];
 }

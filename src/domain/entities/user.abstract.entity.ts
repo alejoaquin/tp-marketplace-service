@@ -1,6 +1,6 @@
 import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
-export abstract class UserEntity {
+export class UserEntity {
     constructor(
         id: string,
         firstname: string,
