@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { StudentDto, TeacherDto, UserDto } from 'src/domain';
+import { StudentEntity, TeacherEntity, UserEntity } from 'src/domain';
 
 @Injectable()
 export class UsersFactoryService {
-    userDtoToTeacherDto(user: UserDto): TeacherDto {
-        const teacherDto = new TeacherDto(
+    userToTeacher(user: UserEntity): TeacherEntity {
+        const teacher = new TeacherEntity(
             user.id,
             user.firstname,
             user.lastname,
@@ -13,11 +13,11 @@ export class UsersFactoryService {
             user.password,
             user.role,
         );
-        return teacherDto;
+        return teacher;
     }
 
-    userDtoToStudentDto(user: UserDto): StudentDto {
-        const studentDto = new StudentDto(
+    userToStudent(user: UserEntity): StudentEntity {
+        const student = new StudentEntity(
             user.id,
             user.firstname,
             user.lastname,
@@ -26,6 +26,6 @@ export class UsersFactoryService {
             user.password,
             user.role,
         );
-        return studentDto;
+        return student;
     }
 }
