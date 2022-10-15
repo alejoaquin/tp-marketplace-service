@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import config from './configuration/data-source';
 import { AppController } from './controllers/app.controller';
+import { CoursesModule } from './services/courses/courses.module';
 import { StudentsModule } from './services/students/students.module';
 import { TeachersModule } from './services/teacher/teachers.module';
 import { UsersModule } from './services/users/users.module';
@@ -13,6 +14,7 @@ import { UsersModule } from './services/users/users.module';
         StudentsModule,
         TeachersModule,
         UsersModule,
+        CoursesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

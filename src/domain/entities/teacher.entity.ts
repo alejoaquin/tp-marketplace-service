@@ -1,5 +1,6 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '../enums';
+import { CourseEntity } from './course.entity';
 import { UserEntity } from './user.abstract.entity';
 
 @Entity()
@@ -9,6 +10,12 @@ export class TeacherEntity extends UserEntity {
 
     @Column({ nullable: true })
     experience: string;
+
+    @OneToMany(() => CourseEntity, (course) => course.teacher, {
+        eager: true,
+        cascade: true,
+    })
+    courses: CourseEntity[];
 
     constructor(
         id: string,
