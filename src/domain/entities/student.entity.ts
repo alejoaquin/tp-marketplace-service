@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany } from 'typeorm';
+import { Role } from '../enums';
 import { EducationEntity } from './education.entity';
 import { UserEntity } from './user.abstract.entity';
 
@@ -11,7 +12,7 @@ export class StudentEntity extends UserEntity {
         phone: number,
         email: string,
         password: string,
-        role: string,
+        role: Role,
     ) {
         super(id, firstname, lastname, phone, email, password, role);
     }

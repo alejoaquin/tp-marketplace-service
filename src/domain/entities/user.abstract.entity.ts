@@ -1,4 +1,5 @@
 import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../enums';
 
 export class UserEntity {
     constructor(
@@ -8,7 +9,7 @@ export class UserEntity {
         phone: number,
         email: string,
         password: string,
-        role: string,
+        role: Role,
     ) {
         this.id = id;
         this.firstname = firstname;
@@ -37,6 +38,9 @@ export class UserEntity {
     @Column()
     password: string;
 
-    @Column()
-    role: string;
+    @Column({
+        type: 'enum',
+        enum: Role,
+    })
+    role: Role;
 }

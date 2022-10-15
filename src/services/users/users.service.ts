@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserEntity } from 'src/domain';
-import { Roles } from 'src/domain/enums/role.enum';
+import { Role } from 'src/domain/enums/role.enum';
 import { StudentsService } from '../students/students.service';
 import { TeachersService } from '../teacher/teachers.service';
 import { UsersFactoryService } from './users-factory.service';
@@ -32,7 +32,7 @@ export class UsersService {
 
     create(user: UserEntity): Promise<UserEntity> {
         try {
-            return user.role === Roles.STUDENT_ROLE
+            return user.role === Role.STUDENT_ROLE
                 ? this.studentsService.create(
                       this.usersFactoryService.userToStudent(user),
                   )

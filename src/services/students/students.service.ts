@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { StudentEntity } from 'src/domain';
+import { EducationLevel } from 'src/domain/enums/education.level.enum';
 import { Repository } from 'typeorm';
 
 @Injectable()

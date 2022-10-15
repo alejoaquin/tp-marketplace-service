@@ -1,4 +1,5 @@
 import { Column, Entity } from 'typeorm';
+import { Role } from '../enums';
 import { UserEntity } from './user.abstract.entity';
 
 @Entity()
@@ -16,7 +17,7 @@ export class TeacherEntity extends UserEntity {
         phone: number,
         email: string,
         password: string,
-        role: string,
+        role: Role,
     ) {
         super(id, firstname, lastname, phone, email, password, role);
     }
