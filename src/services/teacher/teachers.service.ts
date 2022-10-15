@@ -11,8 +11,7 @@ export class TeachersService {
     ) {}
 
     async getAll(): Promise<TeacherEntity[]> {
-        const entities = await this.teachersRepository.find();
-        return entities.map((entity) => entity);
+        return await this.teachersRepository.find();
     }
 
     getById(id: string): Promise<TeacherEntity> {
