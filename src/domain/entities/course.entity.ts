@@ -1,6 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CourseFrequency } from '../enums/course.frequency.enum';
 import { CourseType } from '../enums/course.type.enum';
+import { CommentEntity } from './comment.entity';
 import { TeacherEntity } from './teacher.entity';
 
 @Entity()
@@ -40,6 +47,9 @@ export class CourseEntity {
 
     @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses)
     teacher: TeacherEntity;
+
+    @OneToMany(() => CommentEntity, (comment) => comment.course)
+    comments: CommentEntity[];
 
     @Column({ default: true })
     published: boolean;

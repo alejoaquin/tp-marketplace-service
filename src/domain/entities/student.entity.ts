@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '../enums';
+import { CommentEntity } from './comment.entity';
 import { EducationEntity } from './education.entity';
 import { UserEntity } from './user.abstract.entity';
 
@@ -25,4 +26,7 @@ export class StudentEntity extends UserEntity {
         cascade: true,
     })
     educationalDegrees: EducationEntity[];
+
+    @OneToMany(() => CommentEntity, (comment) => comment.student)
+    comments: CommentEntity[];
 }
