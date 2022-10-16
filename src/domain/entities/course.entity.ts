@@ -8,6 +8,7 @@ import {
 import { CourseFrequency } from '../enums/course.frequency.enum';
 import { CourseType } from '../enums/course.type.enum';
 import { CommentEntity } from './comment.entity';
+import { RatingEntity } from './rating.entity';
 import { TeacherEntity } from './teacher.entity';
 
 @Entity()
@@ -50,6 +51,9 @@ export class CourseEntity {
 
     @OneToMany(() => CommentEntity, (comment) => comment.course)
     comments: CommentEntity[];
+
+    @OneToMany(() => RatingEntity, (rating) => rating.course)
+    ratings: RatingEntity[];
 
     @Column({ default: true })
     published: boolean;

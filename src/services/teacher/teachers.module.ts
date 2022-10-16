@@ -5,9 +5,7 @@ import { CommentEntity, CourseEntity, TeacherEntity } from 'src/domain';
 import { TeachersService } from './teachers.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([TeacherEntity, CourseEntity, CommentEntity]),
-    ],
+    imports: [TypeOrmModule.forFeature([TeacherEntity, CourseEntity])],
     providers: [TeachersService],
     controllers: [TeachersController],
     exports: [TeachersService],
