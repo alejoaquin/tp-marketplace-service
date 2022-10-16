@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoursesController } from 'src/controllers/courses.controller';
-import { CourseEntity, TeacherEntity } from 'src/domain';
-import { CommentEntity } from 'src/domain/entities/comment.entity';
+import { CommentEntity, CourseEntity, TeacherEntity } from 'src/domain';
 import { CoursesService } from './courses.service';
 
 @Module({

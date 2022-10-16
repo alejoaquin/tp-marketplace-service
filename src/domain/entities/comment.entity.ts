@@ -1,11 +1,4 @@
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    OneToOne,
-    PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { CommentStatus } from '../enums';
 import { CourseEntity } from './course.entity';
 import { StudentEntity } from './student.entity';
@@ -18,7 +11,7 @@ export class CommentEntity {
     @Column()
     description: string;
 
-    @ManyToOne(() => StudentEntity, (studen) => studen.comments)
+    @ManyToOne(() => StudentEntity, (student) => student.comments)
     student: StudentEntity;
 
     @Column({
