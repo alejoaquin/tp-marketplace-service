@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '../enums';
 import { CommentEntity } from './comment.entity';
 import { EducationEntity } from './education.entity';
+import { InscriptionEntity } from './inscription.entity';
 import { RatingEntity } from './rating.entity';
 import { UserEntity } from './user.abstract.entity';
 
@@ -33,4 +34,10 @@ export class StudentEntity extends UserEntity {
 
     @OneToMany(() => RatingEntity, (rating) => rating.student)
     ratings: RatingEntity[];
+
+    @OneToMany(() => InscriptionEntity, (inscription) => inscription.student, {
+        eager: true,
+        cascade: false,
+    })
+    inscriptions: InscriptionEntity[];
 }

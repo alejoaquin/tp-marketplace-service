@@ -4,9 +4,11 @@ import { CoursesController } from 'src/controllers/courses.controller';
 import {
     CommentEntity,
     CourseEntity,
+    InscriptionEntity,
     RatingEntity,
     TeacherEntity,
 } from 'src/domain';
+import { StudentsModule } from '../students/students.module';
 import { CoursesService } from './courses.service';
 
 @Module({
@@ -16,7 +18,9 @@ import { CoursesService } from './courses.service';
             CourseEntity,
             CommentEntity,
             RatingEntity,
+            InscriptionEntity,
         ]),
+        StudentsModule,
     ],
     providers: [CoursesService],
     controllers: [CoursesController],
