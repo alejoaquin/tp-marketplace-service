@@ -70,7 +70,7 @@ export class CourseEntity {
 
     @OneToMany(() => InscriptionEntity, (inscription) => inscription.course, {
         eager: true,
-        cascade: false,
+        cascade: true,
     })
     inscriptions: InscriptionEntity[];
 }

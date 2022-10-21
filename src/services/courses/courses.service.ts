@@ -9,8 +9,6 @@ export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
-        @InjectRepository(InscriptionEntity)
-        private inscriptionRepository: Repository<InscriptionEntity>,
     ) {}
 
     async getAll(): Promise<CourseEntity[]> {
@@ -46,19 +44,16 @@ export class CoursesService {
         enrollRequest: EnrollRequest,
     ): Promise<CourseEntity> {
         const course = await this.getById(id);
-        const inscription = this.inscriptionRepository.create({
-            phone: enrollRequest.phone,
-            email: enrollRequest.email,
-            reason: enrollRequest.reason,
-            timeRangeFrom: enrollRequest.timeRangeFrom,
-            timeRangeTo: enrollRequest.timeRangeTo,
-            course: course,
-        });
-        course.inscriptions.push(
-            await this.inscriptionRepository.save(inscription),
-        );
 
-        return course;
+        const inscription = new InscriptionEntity();
+        inscription.phone = enrollRequest.phone;
+        inscription.email = enrollRequest.email;
+        inscription.reason = enrollRequest.reason;
+        inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
+        inscription.timeRangeTo = enrollRequest.timeRangeTo;
+
+        course.inscriptions.push(inscription);
+        return this.coursesRepository.save(course);
     }
 
     async getInscriptions(id: string): Promise<InscriptionEntity[]> {
