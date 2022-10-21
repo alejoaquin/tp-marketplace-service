@@ -1,6 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+    Column,
+    Entity,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
+} from 'typeorm';
 import { CourseFrequency } from '../enums/course.frequency.enum';
 import { CourseType } from '../enums/course.type.enum';
+import { CommentEntity } from './comment.entity';
+import { RatingEntity } from './rating.entity';
 import { TeacherEntity } from './teacher.entity';
 
 @Entity()
@@ -29,7 +37,7 @@ export class CourseEntity {
     @Column({ nullable: true })
     description: string;
 
-    @Column()
+    @Column({ default: 0 })
     rating: number;
 
     @Column({
@@ -40,6 +48,18 @@ export class CourseEntity {
 
     @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses)
     teacher: TeacherEntity;
+
+    @OneToMany(() => CommentEntity, (comment) => comment.course, {
+        eager: true,
+        cascade: true,
+    })
+    comments: CommentEntity[];
+
+    @OneToMany(() => RatingEntity, (rating) => rating.course, {
+        eager: true,
+        cascade: true,
+    })
+    ratings: RatingEntity[];
 
     @Column({ default: true })
     published: boolean;
