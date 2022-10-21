@@ -4,6 +4,7 @@ import { CoursesController } from 'src/controllers/courses.controller';
 import {
     CommentEntity,
     CourseEntity,
+    InscriptionEntity,
     RatingEntity,
     TeacherEntity,
 } from 'src/domain';
@@ -16,6 +17,7 @@ import { CoursesService } from './courses.service';
             CourseEntity,
             CommentEntity,
             RatingEntity,
+            InscriptionEntity,
         ]),
     ],
     providers: [CoursesService],

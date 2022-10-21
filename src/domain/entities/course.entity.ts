@@ -8,6 +8,7 @@ import {
 import { CourseFrequency } from '../enums/course.frequency.enum';
 import { CourseType } from '../enums/course.type.enum';
 import { CommentEntity } from './comment.entity';
+import { InscriptionEntity } from './inscription.entity';
 import { RatingEntity } from './rating.entity';
 import { TeacherEntity } from './teacher.entity';
 
@@ -66,4 +67,10 @@ export class CourseEntity {
 
     @Column({ nullable: true })
     imgSrc: string;
+
+    @OneToMany(() => InscriptionEntity, (inscription) => inscription.course, {
+        eager: true,
+        cascade: false,
+    })
+    inscriptions: InscriptionEntity[];
 }
