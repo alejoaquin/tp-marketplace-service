@@ -8,6 +8,7 @@ import {
     Put,
 } from '@nestjs/common';
 import { CourseEntity, InscriptionEntity } from 'src/domain';
+import { CommentRequest } from 'src/domain/dto';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { CoursesService } from 'src/services/courses/courses.service';
 
@@ -56,5 +57,22 @@ export class CoursesController {
         @Param('id') id: string,
     ): Promise<InscriptionEntity[]> {
         return this.coursesService.getInscriptions(id);
+    }
+
+    @Post(':id/comments')
+    comment(
+        @Param('id') id: string,
+        @Body() comment: CommentRequest,
+    ): Promise<CourseEntity> {
+        return this.coursesService.addComment(id, comment);
+    }
+
+    @Put(':id/comments/:commentId')
+    updateComment(
+        @Param('id') id: string,
+        @Param('commentId') commentId: string,
+        @Body() comment: CommentRequest,
+    ): Promise<CourseEntity> {
+        return this.coursesService.updateComment(id, commentId, comment);
     }
 }
