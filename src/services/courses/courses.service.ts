@@ -9,7 +9,7 @@ export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
-        @InjectRepository(CourseEntity)
+        @InjectRepository(InscriptionEntity)
         private inscriptionRepository: Repository<InscriptionEntity>,
     ) {}
 
@@ -52,9 +52,8 @@ export class CoursesService {
             reason: enrollRequest.reason,
             timeRangeFrom: enrollRequest.timeRangeFrom,
             timeRangeTo: enrollRequest.timeRangeTo,
+            course: course,
         });
-
-        inscription.course = course;
         course.inscriptions.push(
             await this.inscriptionRepository.save(inscription),
         );
