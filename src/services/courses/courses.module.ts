@@ -8,6 +8,7 @@ import {
     RatingEntity,
     TeacherEntity,
 } from 'src/domain';
+import { StudentsModule } from '../students/students.module';
 import { CoursesService } from './courses.service';
 
 @Module({
@@ -19,6 +20,7 @@ import { CoursesService } from './courses.service';
             RatingEntity,
             InscriptionEntity,
         ]),
+        StudentsModule,
     ],
     providers: [CoursesService],
     controllers: [CoursesController],

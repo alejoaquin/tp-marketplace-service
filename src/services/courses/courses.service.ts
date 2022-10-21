@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CourseEntity, InscriptionEntity } from 'src/domain';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
+import { StudentsService } from '../students/students.service';
 
 @Injectable()
 export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
+        private studentServices: StudentsService,
     ) {}
 
     async getAll(): Promise<CourseEntity[]> {
@@ -43,7 +45,11 @@ export class CoursesService {
         id: string,
         enrollRequest: EnrollRequest,
     ): Promise<CourseEntity> {
+        //TODO: fail if course and student don't exist
         const course = await this.getById(id);
+        const student = await this.studentServices.getById(
+            enrollRequest.studentId,
+        );
 
         const inscription = new InscriptionEntity();
         inscription.phone = enrollRequest.phone;
@@ -51,6 +57,7 @@ export class CoursesService {
         inscription.reason = enrollRequest.reason;
         inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
         inscription.timeRangeTo = enrollRequest.timeRangeTo;
+        inscription.student = student;
 
         course.inscriptions.push(inscription);
         return this.coursesRepository.save(course);
