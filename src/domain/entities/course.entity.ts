@@ -49,10 +49,16 @@ export class CourseEntity {
     @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses)
     teacher: TeacherEntity;
 
-    @OneToMany(() => CommentEntity, (comment) => comment.course)
+    @OneToMany(() => CommentEntity, (comment) => comment.course, {
+        eager: true,
+        cascade: true,
+    })
     comments: CommentEntity[];
 
-    @OneToMany(() => RatingEntity, (rating) => rating.course)
+    @OneToMany(() => RatingEntity, (rating) => rating.course, {
+        eager: true,
+        cascade: true,
+    })
     ratings: RatingEntity[];
 
     @Column({ default: true })
