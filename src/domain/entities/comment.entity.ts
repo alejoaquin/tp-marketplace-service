@@ -17,10 +17,11 @@ export class CommentEntity {
     @Column({
         type: 'enum',
         enum: CommentStatus,
+        default: CommentStatus.PENDING,
     })
     status: CommentStatus;
 
-    @Column()
+    @Column({ nullable: true })
     blockReason: string;
 
     @ManyToOne(() => CourseEntity, (course) => course.comments)

@@ -37,7 +37,7 @@ export class CourseEntity {
     @Column({ nullable: true })
     description: string;
 
-    @Column()
+    @Column({ default: 0 })
     rating: number;
 
     @Column({
