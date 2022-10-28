@@ -34,5 +34,5 @@ export class InscriptionEntity {
     status: InscriptionStatus;
 
     @ManyToOne(() => CourseEntity, (course) => course.inscriptions)
-    course: CourseEntity;
+    course: Promise<CourseEntity>;
 }

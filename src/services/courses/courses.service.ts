@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     CommentEntity,
@@ -9,6 +9,8 @@ import {
 } from 'src/domain';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
+import { CommentsService } from '../comments/comments.service';
+import { InscriptionsService } from '../inscriptions/inscriptions.service';
 import { StudentsService } from '../students/students.service';
 
 @Injectable()
@@ -16,93 +18,13 @@ export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
-        private studentServices: StudentsService,
+        private studentService: StudentsService,
+        private commentsService: CommentsService,
+        private inscriptionsService: InscriptionsService,
     ) {}
 
-    async getAll(): Promise<CourseEntity[]> {
+    getAll(): Promise<CourseEntity[]> {
         return this.coursesRepository.find();
-    }
-
-    getById(id: string): Promise<CourseEntity> {
-        return this.coursesRepository.findOneBy({ id: id });
-    }
-
-    create(course: CourseEntity): Promise<CourseEntity> {
-        try {
-            const newCourse = this.coursesRepository.create(course);
-            return this.coursesRepository.save(newCourse);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
-    }
-
-    update(id: string, course: CourseEntity): Promise<CourseEntity> {
-        course.id = id;
-        return this.coursesRepository.save(course);
-    }
-
-    async delete(id: string): Promise<CourseEntity> {
-        const course = await this.getById(id);
-        return course ? this.coursesRepository.remove(course) : null; //TODO: check this
-    }
-
-    async enroll(
-        id: string,
-        enrollRequest: EnrollRequest,
-    ): Promise<CourseEntity> {
-        //TODO: fail if course and student don't exist
-        const course = await this.getById(id);
-        const student = await this.studentServices.getById(
-            enrollRequest.studentId,
-        );
-
-        const inscription = new InscriptionEntity();
-        inscription.phone = enrollRequest.phone;
-        inscription.email = enrollRequest.email;
-        inscription.reason = enrollRequest.reason;
-        inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
-        inscription.timeRangeTo = enrollRequest.timeRangeTo;
-        inscription.student = student;
-
-        course.inscriptions.push(inscription);
-        return this.coursesRepository.save(course);
-    }
-
-    async getInscriptions(id: string): Promise<InscriptionEntity[]> {
-        const course = await this.getById(id);
-        return course.inscriptions;
-    }
-
-    async addComment(
-        id: string,
-        commentRequest: CommentRequest,
-    ): Promise<CourseEntity> {
-        //TODO: fail if course and student don't exist
-        const course = await this.getById(id);
-        const student = await this.studentServices.getById(
-            commentRequest.studentId,
-        );
-
-        const comment = new CommentEntity();
-        comment.description = commentRequest.description;
-        comment.student = student;
-
-        course.comments.push(comment);
-        return this.coursesRepository.save(course);
-    }
-
-    async updateComment(
-        id: string,
-        commentId: string,
-        commentRequest: CommentRequest,
-    ): Promise<CourseEntity> {
-        const course = await this.getById(id);
-        const comment = course.comments.find((c) => c.id == commentId);
-        comment.status = commentRequest.status;
-        comment.description = commentRequest.description;
-
-        return this.coursesRepository.save(course);
     }
 
     async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
@@ -113,5 +35,86 @@ export class CoursesService {
             rating: searchRequest.rating,
             type: searchRequest.type,
         });
+    }
+
+    getById(id: string): Promise<CourseEntity> {
+        return this.coursesRepository.findOneByOrFail({ id: id });
+    }
+
+    create(course: CourseEntity): Promise<CourseEntity> {
+        return this.coursesRepository.save(course);
+    }
+
+    async update(
+        id: string,
+        updateRequest: CourseEntity,
+    ): Promise<CourseEntity> {
+        const course = await this.getById(id);
+        course.name = updateRequest.name;
+        course.subject = updateRequest.subject;
+        course.duration = updateRequest.duration;
+        course.frequency = updateRequest.frequency;
+        course.price = updateRequest.price;
+        course.description = updateRequest.description;
+        course.type = updateRequest.type;
+        course.imgSrc = updateRequest.imgSrc;
+        return this.coursesRepository.save(course);
+    }
+
+    async delete(id: string): Promise<CourseEntity> {
+        const course = await this.getById(id);
+        return this.coursesRepository.remove(course);
+    }
+
+    async enroll(
+        id: string,
+        enrollRequest: EnrollRequest,
+    ): Promise<CourseEntity> {
+        const course = await this.getById(id);
+        const student = await this.studentService.getById(
+            enrollRequest.studentId,
+        );
+        const inscription = this.inscriptionsService.create(
+            enrollRequest,
+            student,
+        );
+
+        course.inscriptions.push(inscription);
+        return this.coursesRepository.save(course);
+    }
+
+    async getInscriptions(id: string): Promise<InscriptionEntity[]> {
+        const course = await this.getById(id);
+        return course.inscriptions;
+    }
+
+    async getInscriptionById(
+        id: string,
+        inscriptionId: string,
+    ): Promise<InscriptionEntity> {
+        const inscriptions = await this.getInscriptions(id).then((arr) =>
+            arr.filter((i) => i.id === inscriptionId),
+        );
+        if (inscriptions == null || inscriptions.length < 1)
+            throw new NotFoundException();
+        return inscriptions.pop();
+    }
+
+    async addComment(
+        id: string,
+        commentRequest: CommentRequest,
+    ): Promise<CourseEntity> {
+        const course = await this.getById(id);
+        const student = await this.studentService.getById(
+            commentRequest.studentId,
+        );
+        const comment = this.commentsService.create(commentRequest, student);
+        course.comments.push(comment);
+        return this.coursesRepository.save(course);
+    }
+
+    async getComments(id: string): Promise<CommentEntity[]> {
+        const course = await this.getById(id);
+        return course.comments;
     }
 }
