@@ -4,6 +4,7 @@ import {
     CommentEntity,
     CommentRequest,
     CourseEntity,
+    CourseSearchRequest,
     InscriptionEntity,
 } from 'src/domain';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
@@ -102,5 +103,15 @@ export class CoursesService {
         comment.description = commentRequest.description;
 
         return this.coursesRepository.save(course);
+    }
+
+    async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
+        return this.coursesRepository.findBy({
+            name: searchRequest.name,
+            subject: searchRequest.subject,
+            frequency: searchRequest.frequency,
+            rating: searchRequest.rating,
+            type: searchRequest.type,
+        });
     }
 }

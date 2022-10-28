@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import {
     NotificationEntity,
     NotificationRequest,
@@ -25,13 +25,9 @@ export class UsersController {
     }
 
     @Post()
+    @HttpCode(201)
     create(@Body() user: UserEntity): Promise<UserEntity> {
         return this.usersService.create(user);
-    }
-
-    @Delete(':id')
-    delete(@Param('id') id: string) {
-        return this.usersService.delete(id);
     }
 
     @Get(':id/notifications')
@@ -40,10 +36,17 @@ export class UsersController {
     }
 
     @Post(':id/notifications')
+    @HttpCode(201)
     createNotification(
         @Param('id') id: string,
         @Body() notification: NotificationRequest,
     ): Promise<NotificationEntity> {
         return this.notificationsService.create(id, notification);
+    }
+
+    @Post(':id/notifications/:notificationId')
+    @HttpCode(204)
+    reedNotification(@Param('notificationId') id: string): Promise<void> {
+        return this.notificationsService.read(id);
     }
 }

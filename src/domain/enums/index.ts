@@ -6,5 +6,4 @@ export * from './education.level.enum';
 export * from './education.status.enum';
 export * from './inscription.status.enum';
 export * from './notification.source.enum';
-export * from './notification.status.enum';
 export * from './role.enum';

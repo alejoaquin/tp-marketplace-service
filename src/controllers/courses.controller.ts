@@ -10,6 +10,7 @@ import {
 import {
     CommentRequest,
     CourseEntity,
+    CourseSearchRequest,
     EnrollRequest,
     InscriptionEntity,
 } from 'src/domain';
@@ -24,14 +25,21 @@ export class CoursesController {
         return this.coursesService.getAll();
     }
 
-    @Get(':id')
-    async getById(@Param('id') id: string): Promise<CourseEntity> {
-        return this.coursesService.getById(id);
-    }
-
     @Post()
     create(@Body() course: CourseEntity): Promise<CourseEntity> {
         return this.coursesService.create(course);
+    }
+
+    @Post('search')
+    search(
+        @Body() searchRequest: CourseSearchRequest,
+    ): Promise<CourseEntity[]> {
+        return this.coursesService.search(searchRequest);
+    }
+
+    @Get(':id')
+    async getById(@Param('id') id: string): Promise<CourseEntity> {
+        return this.coursesService.getById(id);
     }
 
     @Put(':id')
