@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommentEntity, CourseEntity, InscriptionEntity } from 'src/domain';
-import { CommentRequest } from 'src/domain/dto';
+import {
+    CommentEntity,
+    CommentRequest,
+    CourseEntity,
+    InscriptionEntity,
+} from 'src/domain';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
 import { StudentsService } from '../students/students.service';

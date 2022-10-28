@@ -7,9 +7,12 @@ import {
     Post,
     Put,
 } from '@nestjs/common';
-import { CourseEntity, InscriptionEntity } from 'src/domain';
-import { CommentRequest } from 'src/domain/dto';
-import { EnrollRequest } from 'src/domain/dtos/enroll.request';
+import {
+    CommentRequest,
+    CourseEntity,
+    EnrollRequest,
+    InscriptionEntity,
+} from 'src/domain';
 import { CoursesService } from 'src/services/courses/courses.service';
 
 @Controller('courses')
