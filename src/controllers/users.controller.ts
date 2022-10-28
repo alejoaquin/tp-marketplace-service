@@ -15,17 +15,17 @@ export class UsersController {
     ) {}
 
     @Get()
-    async getAll() {
+    getAll(): Promise<UserEntity[]> {
         return this.usersService.getAll();
     }
 
     @Get(':id')
-    async getById(@Param('id') id: string) {
+    getById(@Param('id') id: string): Promise<UserEntity> {
         return this.usersService.getById(id);
     }
 
     @Post()
-    create(@Body() user: UserEntity) {
+    create(@Body() user: UserEntity): Promise<UserEntity> {
         return this.usersService.create(user);
     }
 
@@ -35,16 +35,14 @@ export class UsersController {
     }
 
     @Get(':id/notifications')
-    async getNotifications(
-        @Param('id') id: string,
-    ): Promise<NotificationEntity[]> {
+    getNotifications(@Param('id') id: string): Promise<NotificationEntity[]> {
         return this.notificationsService.getAll(id);
     }
 
     @Post(':id/notifications')
-    async createNotification(
+    createNotification(
         @Param('id') id: string,
-        @Body('notification') notification: NotificationRequest,
+        @Body() notification: NotificationRequest,
     ): Promise<NotificationEntity> {
         return this.notificationsService.create(id, notification);
     }
