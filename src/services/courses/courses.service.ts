@@ -9,6 +9,7 @@ import {
 } from 'src/domain';
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
+import { CommentsService } from '../comments/comments.service';
 import { StudentsService } from '../students/students.service';
 
 @Injectable()
@@ -16,44 +17,59 @@ export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
-        private studentServices: StudentsService,
+        private studentService: StudentsService,
+        private commentsService: CommentsService,
     ) {}
 
-    async getAll(): Promise<CourseEntity[]> {
+    getAll(): Promise<CourseEntity[]> {
         return this.coursesRepository.find();
     }
 
+    async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
+        return this.coursesRepository.findBy({
+            name: searchRequest.name,
+            subject: searchRequest.subject,
+            frequency: searchRequest.frequency,
+            rating: searchRequest.rating,
+            type: searchRequest.type,
+        });
+    }
+
     getById(id: string): Promise<CourseEntity> {
-        return this.coursesRepository.findOneBy({ id: id });
+        return this.coursesRepository.findOneByOrFail({ id: id });
     }
 
     create(course: CourseEntity): Promise<CourseEntity> {
-        try {
-            const newCourse = this.coursesRepository.create(course);
-            return this.coursesRepository.save(newCourse);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
+        return this.coursesRepository.save(course);
     }
 
-    update(id: string, course: CourseEntity): Promise<CourseEntity> {
-        course.id = id;
+    async update(
+        id: string,
+        updateRequest: CourseEntity,
+    ): Promise<CourseEntity> {
+        const course = await this.getById(id);
+        course.name = updateRequest.name;
+        course.subject = updateRequest.subject;
+        course.duration = updateRequest.duration;
+        course.frequency = updateRequest.frequency;
+        course.price = updateRequest.price;
+        course.description = updateRequest.description;
+        course.type = updateRequest.type;
+        course.imgSrc = updateRequest.imgSrc;
         return this.coursesRepository.save(course);
     }
 
     async delete(id: string): Promise<CourseEntity> {
         const course = await this.getById(id);
-        return course ? this.coursesRepository.remove(course) : null; //TODO: check this
+        return this.coursesRepository.remove(course);
     }
 
     async enroll(
         id: string,
         enrollRequest: EnrollRequest,
     ): Promise<CourseEntity> {
-        //TODO: fail if course and student don't exist
         const course = await this.getById(id);
-        const student = await this.studentServices.getById(
+        const student = await this.studentService.getById(
             enrollRequest.studentId,
         );
 
@@ -78,40 +94,17 @@ export class CoursesService {
         id: string,
         commentRequest: CommentRequest,
     ): Promise<CourseEntity> {
-        //TODO: fail if course and student don't exist
         const course = await this.getById(id);
-        const student = await this.studentServices.getById(
+        const student = await this.studentService.getById(
             commentRequest.studentId,
         );
-
-        const comment = new CommentEntity();
-        comment.description = commentRequest.description;
-        comment.student = student;
-
+        const comment = this.commentsService.create(commentRequest, student);
         course.comments.push(comment);
         return this.coursesRepository.save(course);
     }
 
-    async updateComment(
-        id: string,
-        commentId: string,
-        commentRequest: CommentRequest,
-    ): Promise<CourseEntity> {
+    async getComments(id: string): Promise<CommentEntity[]> {
         const course = await this.getById(id);
-        const comment = course.comments.find((c) => c.id == commentId);
-        comment.status = commentRequest.status;
-        comment.description = commentRequest.description;
-
-        return this.coursesRepository.save(course);
-    }
-
-    async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
-        return this.coursesRepository.findBy({
-            name: searchRequest.name,
-            subject: searchRequest.subject,
-            frequency: searchRequest.frequency,
-            rating: searchRequest.rating,
-            type: searchRequest.type,
-        });
+        return course.comments;
     }
 }
