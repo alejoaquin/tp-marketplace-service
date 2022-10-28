@@ -5,10 +5,9 @@ import {
     Get,
     HttpCode,
     Param,
-    Post,
     Put,
 } from '@nestjs/common';
-import { TeacherEntity } from 'src/domain';
+import { CourseEntity, TeacherEntity } from 'src/domain';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
 @Controller('teachers')
@@ -37,5 +36,11 @@ export class TeachersController {
     @HttpCode(204)
     delete(@Param('id') id: string): Promise<TeacherEntity> {
         return this.teachersService.delete(id);
+    }
+
+    @Get(':id/courses')
+    async getCourses(@Param('id') id: string): Promise<CourseEntity[]> {
+        const teacher = await this.teachersService.getById(id);
+        return teacher.courses;
     }
 }
