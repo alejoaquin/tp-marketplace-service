@@ -15,26 +15,29 @@ export class StudentsService {
     }
 
     getById(id: string): Promise<StudentEntity> {
-        return this.studentsRepository.findOneBy({ id: id });
+        return this.studentsRepository.findOneByOrFail({ id: id });
     }
 
     create(student: StudentEntity): Promise<StudentEntity> {
-        try {
-            return this.studentsRepository.save(student);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
+        return this.studentsRepository.save(student);
     }
 
-    update(id: string, student: StudentEntity): Promise<StudentEntity> {
-        console.log(student);
-        student.id = id;
+    async update(
+        id: string,
+        updateRequest: StudentEntity,
+    ): Promise<StudentEntity> {
+        const student = await this.getById(id);
+        student.email;
+        student.firstname = updateRequest.firstname;
+        student.lastname = updateRequest.lastname;
+        student.phone = updateRequest.phone;
+        student.birthday = updateRequest.birthday;
+        student.educationalDegrees = updateRequest.educationalDegrees;
         return this.studentsRepository.save(student);
     }
 
     async delete(id: string): Promise<StudentEntity> {
-        const student = await this.studentsRepository.findOneBy({ id: id });
-        return student ? this.studentsRepository.remove(student) : null; //TODO: check this
+        const student = await this.getById(id);
+        return this.studentsRepository.remove(student);
     }
 }
