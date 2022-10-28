@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '../enums';
 import { CourseEntity } from './course.entity';
-import { UserEntity } from './user.abstract.entity';
+import { UserEntity } from './user.entity';
 
 @Entity()
 export class TeacherEntity extends UserEntity {

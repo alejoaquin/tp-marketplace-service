@@ -4,5 +4,5 @@ export * from './education.entity';
 export * from './rating.entity';
 export * from './student.entity';
 export * from './teacher.entity';
-export * from './user.abstract.entity';
+export * from './user.entity';
 export * from './inscription.entity';
