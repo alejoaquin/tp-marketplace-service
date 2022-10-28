@@ -61,6 +61,10 @@ export class NotificationsService {
         return this.notificationsRepository.findBy({ userId: userId });
     }
 
+    async read(id: string): Promise<void> {
+        this.notificationsRepository.update({ id: id }, { seen: true });
+    }
+
     private getComment(commentId: string): Promise<CommentEntity> {
         return this.commentsRepository.findOneByOrFail({
             id: commentId,

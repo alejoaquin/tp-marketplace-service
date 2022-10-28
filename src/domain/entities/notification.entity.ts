@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { NotificationSource, NotificationState } from '../enums';
+import { NotificationSource } from '../enums';
 
 @Entity()
 export class NotificationEntity {
@@ -15,12 +15,8 @@ export class NotificationEntity {
     @Column()
     objectId: string;
 
-    @Column({
-        type: 'enum',
-        enum: NotificationState,
-        default: NotificationState.NEW,
-    })
-    status: NotificationState;
+    @Column({ default: false })
+    seen: boolean;
 
     @Column({
         type: 'enum',

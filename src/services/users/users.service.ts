@@ -44,9 +44,4 @@ export class UsersService {
             throw err;
         }
     }
-
-    async delete(id: string): Promise<UserEntity> {
-        const user = this.teachersService.delete(id);
-        return user ? user : this.studentsService.delete(id);
-    }
 }
