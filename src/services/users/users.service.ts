@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundError } from 'rxjs';
 import { UserEntity } from 'src/domain';
 import { Role } from 'src/domain/enums/role.enum';
+import { EntityNotFoundError } from 'typeorm';
 import { StudentsService } from '../students/students.service';
 import { TeachersService } from '../teacher/teachers.service';
 import { UsersFactoryService } from './users-factory.service';
@@ -21,27 +23,19 @@ export class UsersService {
     }
 
     async getById(id: string): Promise<UserEntity> {
-        try {
-            const user = await this.teachersService.getById(id);
-            return user ? user : this.studentsService.getById(id);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
+        return this.studentsService.getById(id).catch((err) => {
+            if (err instanceof EntityNotFoundError)
+                return this.teachersService.getById(id);
+        });
     }
 
     create(user: UserEntity): Promise<UserEntity> {
-        try {
-            return user.role === Role.STUDENT_ROLE
-                ? this.studentsService.create(
-                      this.usersFactoryService.userToStudent(user),
-                  )
-                : this.teachersService.create(
-                      this.usersFactoryService.userToTeacher(user),
-                  );
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
+        return user.role === Role.STUDENT_ROLE
+            ? this.studentsService.create(
+                  this.usersFactoryService.userToStudent(user),
+              )
+            : this.teachersService.create(
+                  this.usersFactoryService.userToTeacher(user),
+              );
     }
 }

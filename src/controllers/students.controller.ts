@@ -3,6 +3,7 @@ import {
     Controller,
     Delete,
     Get,
+    HttpCode,
     Param,
     Post,
     Put,
@@ -24,11 +25,6 @@ export class StudentController {
         return this.studentServices.getById(id);
     }
 
-    @Post()
-    create(@Body() student: StudentEntity): Promise<StudentEntity> {
-        return this.studentServices.create(student);
-    }
-
     @Put(':id')
     update(
         @Param('id') id: string,
@@ -38,6 +34,7 @@ export class StudentController {
     }
 
     @Delete(':id')
+    @HttpCode(204)
     delete(@Param('id') id: string): Promise<StudentEntity> {
         return this.studentServices.delete(id);
     }
