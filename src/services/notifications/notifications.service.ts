@@ -25,12 +25,15 @@ export class NotificationsService {
         request: NotificationRequest,
     ): Promise<NotificationEntity> {
         if (request.source === NotificationSource.INSCRIPTION) {
-            const inscription = await this.getInscription(request.objectId);
-            if (inscription.course.teacher.id !== userId) {
+            const teacher = await this.getInscription(request.objectId)
+                .then((i) => i.course)
+                .then((c) => c.teacher);
+            if (teacher.id !== userId) {
                 throw new BadRequestException(); // TODO: check error message
             }
         } else {
             const comment = await this.getComment(request.objectId);
+            const teacher = await comment.course.then((c) => c.teacher);
             if (
                 request.source === NotificationSource.BLOCK &&
                 comment.student.id !== userId
@@ -38,7 +41,7 @@ export class NotificationsService {
                 throw new BadRequestException(); // TODO: check error message
             } else if (
                 request.source === NotificationSource.COMMENT &&
-                comment.course.teacher.id !== userId
+                teacher.id !== userId
             ) {
                 throw new BadRequestException(); // TODO: check error message
             }
