@@ -4,7 +4,7 @@ import { CommentEntity } from './comment.entity';
 import { EducationEntity } from './education.entity';
 import { InscriptionEntity } from './inscription.entity';
 import { RatingEntity } from './rating.entity';
-import { UserEntity } from './user.abstract.entity';
+import { UserEntity } from './user.entity';
 
 @Entity()
 export class StudentEntity extends UserEntity {

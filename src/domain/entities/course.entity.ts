@@ -48,7 +48,7 @@ export class CourseEntity {
     type: CourseType;
 
     @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses)
-    teacher: TeacherEntity;
+    teacher: Promise<TeacherEntity>;
 
     @OneToMany(() => CommentEntity, (comment) => comment.course, {
         eager: true,

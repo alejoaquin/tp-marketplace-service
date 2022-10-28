@@ -25,5 +25,5 @@ export class CommentEntity {
     blockReason: string;
 
     @ManyToOne(() => CourseEntity, (course) => course.comments)
-    course: CourseEntity;
+    course: Promise<CourseEntity>;
 }
