@@ -1,5 +1,5 @@
 export enum NotificationSource {
-    COURSE = 'inscripcion',
+    INSCRIPTION = 'inscripcion',
     COMMENT = 'comentario',
     BLOCK = 'bloqueo',
 }

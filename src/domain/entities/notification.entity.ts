@@ -1,8 +1,5 @@
-/*
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { NotificationSource, NotificationState } from '../enums';
-import { CourseEntity } from './course.entity';
-import { UserEntity } from './user.abstract.entity';
 
 @Entity()
 export class NotificationEntity {
@@ -10,13 +7,14 @@ export class NotificationEntity {
     id: string;
 
     @Column()
-    reason: string;
+    description: string;
 
-    @ManyToOne(() => UserEntity, (user) => user.notifications)
-    user: UserEntity;
+    @Column()
+    userId: string;
 
-    @ManyToOne(() => CourseEntity, (course) => course.inscriptions)
-    course: CourseEntity;
+    @Column()
+    objectId: string;
+
     @Column({
         type: 'enum',
         enum: NotificationState,
@@ -30,4 +28,3 @@ export class NotificationEntity {
     })
     source: NotificationSource;
 }
-*/

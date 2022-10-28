@@ -1,10 +1,18 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { UserEntity } from 'src/domain';
+import {
+    NotificationEntity,
+    NotificationRequest,
+    UserEntity,
+} from 'src/domain';
+import { NotificationsService } from 'src/services/notifications/notifications.service';
 import { UsersService } from 'src/services/users/users.service';
 
 @Controller('users')
 export class UsersController {
-    constructor(private usersService: UsersService) {}
+    constructor(
+        private usersService: UsersService,
+        private notificationsService: NotificationsService,
+    ) {}
 
     @Get()
     async getAll() {
@@ -24,5 +32,20 @@ export class UsersController {
     @Delete(':id')
     delete(@Param('id') id: string) {
         return this.usersService.delete(id);
+    }
+
+    @Get(':id/notifications')
+    async getNotifications(
+        @Param('id') id: string,
+    ): Promise<NotificationEntity[]> {
+        return this.notificationsService.getAll(id);
+    }
+
+    @Post(':id/notifications')
+    async createNotification(
+        @Param('id') id: string,
+        @Body('notification') notification: NotificationRequest,
+    ): Promise<NotificationEntity> {
+        return this.notificationsService.create(id, notification);
     }
 }
