@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     CommentEntity,
@@ -10,6 +10,7 @@ import {
 import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
+import { InscriptionsService } from '../inscriptions/inscriptions.service';
 import { StudentsService } from '../students/students.service';
 
 @Injectable()
@@ -19,6 +20,7 @@ export class CoursesService {
         private coursesRepository: Repository<CourseEntity>,
         private studentService: StudentsService,
         private commentsService: CommentsService,
+        private inscriptionsService: InscriptionsService,
     ) {}
 
     getAll(): Promise<CourseEntity[]> {
@@ -72,14 +74,10 @@ export class CoursesService {
         const student = await this.studentService.getById(
             enrollRequest.studentId,
         );
-
-        const inscription = new InscriptionEntity();
-        inscription.phone = enrollRequest.phone;
-        inscription.email = enrollRequest.email;
-        inscription.reason = enrollRequest.reason;
-        inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
-        inscription.timeRangeTo = enrollRequest.timeRangeTo;
-        inscription.student = student;
+        const inscription = this.inscriptionsService.create(
+            enrollRequest,
+            student,
+        );
 
         course.inscriptions.push(inscription);
         return this.coursesRepository.save(course);
@@ -88,6 +86,18 @@ export class CoursesService {
     async getInscriptions(id: string): Promise<InscriptionEntity[]> {
         const course = await this.getById(id);
         return course.inscriptions;
+    }
+
+    async getInscriptionById(
+        id: string,
+        inscriptionId: string,
+    ): Promise<InscriptionEntity> {
+        const inscriptions = await this.getInscriptions(id).then((arr) =>
+            arr.filter((i) => i.id === inscriptionId),
+        );
+        if (inscriptions == null || inscriptions.length < 1)
+            throw new NotFoundException();
+        return inscriptions.pop();
     }
 
     async addComment(

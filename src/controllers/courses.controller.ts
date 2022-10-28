@@ -15,15 +15,18 @@ import {
     CourseSearchRequest,
     EnrollRequest,
     InscriptionEntity,
+    UpdateInscriptionRequest,
 } from 'src/domain';
 import { CommentsService } from 'src/services/comments/comments.service';
 import { CoursesService } from 'src/services/courses/courses.service';
+import { InscriptionsService } from 'src/services/inscriptions/inscriptions.service';
 
 @Controller('courses')
 export class CoursesController {
     constructor(
         private coursesService: CoursesService,
         private commentsService: CommentsService,
+        private inscriptionsService: InscriptionsService,
     ) {}
 
     @Get()
@@ -79,6 +82,27 @@ export class CoursesController {
         @Param('id') id: string,
     ): Promise<InscriptionEntity[]> {
         return this.coursesService.getInscriptions(id);
+    }
+
+    @Get(':id/inscriptions/:inscriptionId')
+    async getInscriptionById(
+        @Param('id') id: string,
+        @Param('inscriptionId') inscriptionId: string,
+    ): Promise<InscriptionEntity> {
+        return this.coursesService.getInscriptionById(id, inscriptionId);
+    }
+
+    @Put(':id/inscriptions/:inscriptionId')
+    updateInscriptionById(
+        @Param('id') id: string,
+        @Param('inscriptionId') inscriptionId: string,
+        @Body() updateRequest: UpdateInscriptionRequest,
+    ): Promise<InscriptionEntity> {
+        return this.inscriptionsService.update(
+            id,
+            inscriptionId,
+            updateRequest,
+        );
     }
 
     @Post(':id/comments')
