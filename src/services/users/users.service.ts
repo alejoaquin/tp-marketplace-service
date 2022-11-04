@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/domain';
 import { Role } from 'src/domain/enums/role.enum';
 import { EntityNotFoundError } from 'typeorm';
