@@ -4,6 +4,7 @@ import {
     NotificationRequest,
     UserEntity,
 } from 'src/domain';
+import { Public } from 'src/public.decorator';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
 import { UsersService } from 'src/services/users/users.service';
 
@@ -14,6 +15,7 @@ export class UsersController {
         private notificationsService: NotificationsService,
     ) {}
 
+    @Public()
     @Get()
     getAll(): Promise<UserEntity[]> {
         return this.usersService.getAll();
@@ -24,6 +26,7 @@ export class UsersController {
         return this.usersService.getById(id);
     }
 
+    @Public()
     @Post()
     @HttpCode(201)
     create(@Body() user: UserEntity): Promise<UserEntity> {
