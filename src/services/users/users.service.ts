@@ -40,7 +40,7 @@ export class UsersService {
               );
     }
 
-    async fineByEmail(email: string): Promise<UserEntity> {
+    async findByEmail(email: string): Promise<UserEntity> {
         return this.studentsService.getByEmail(email).catch((err) => {
             if (err instanceof EntityNotFoundError)
                 return this.teachersService.getByEmail(email);

@@ -51,6 +51,7 @@ export class CoursesController {
         return this.coursesService.search(searchRequest);
     }
 
+    @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<CourseEntity> {
         return this.coursesService.getById(id);
