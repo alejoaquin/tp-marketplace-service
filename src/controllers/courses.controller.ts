@@ -42,6 +42,7 @@ export class CoursesController {
         return this.coursesService.create(course);
     }
 
+    @Public()
     @Post('search')
     @HttpCode(200)
     search(
