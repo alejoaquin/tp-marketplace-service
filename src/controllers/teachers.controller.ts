@@ -8,6 +8,7 @@ import {
     Put,
 } from '@nestjs/common';
 import { CourseEntity, TeacherEntity } from 'src/domain';
+import { Public } from 'src/public.decorator';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
 @Controller('teachers')
@@ -19,6 +20,7 @@ export class TeachersController {
         return this.teachersService.getAll();
     }
 
+    @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<TeacherEntity> {
         return this.teachersService.getById(id);
@@ -38,6 +40,7 @@ export class TeachersController {
         return this.teachersService.delete(id);
     }
 
+    @Public()
     @Get(':id/courses')
     async getCourses(@Param('id') id: string): Promise<CourseEntity[]> {
         const teacher = await this.teachersService.getById(id);

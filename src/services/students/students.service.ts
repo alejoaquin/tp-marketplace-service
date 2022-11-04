@@ -18,6 +18,10 @@ export class StudentsService {
         return this.studentsRepository.findOneByOrFail({ id: id });
     }
 
+    getByEmail(email: string): Promise<StudentEntity> {
+        return this.studentsRepository.findOneByOrFail({ email: email });
+    }
+
     create(student: StudentEntity): Promise<StudentEntity> {
         return this.studentsRepository.save(student);
     }

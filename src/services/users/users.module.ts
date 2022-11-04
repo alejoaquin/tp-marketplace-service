@@ -10,5 +10,6 @@ import { UsersService } from './users.service';
     imports: [TeachersModule, StudentsModule, NotificationsModule],
     providers: [UsersService, UsersFactoryService],
     controllers: [UsersController],
+    exports: [UsersService],
 })
 export class UsersModule {}

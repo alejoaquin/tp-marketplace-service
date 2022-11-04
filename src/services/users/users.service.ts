@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotFoundError } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/domain';
 import { Role } from 'src/domain/enums/role.enum';
 import { EntityNotFoundError } from 'typeorm';
@@ -30,6 +30,7 @@ export class UsersService {
     }
 
     create(user: UserEntity): Promise<UserEntity> {
+        user.password = bcrypt.hashSync(user.password, 8);
         return user.role === Role.STUDENT_ROLE
             ? this.studentsService.create(
                   this.usersFactoryService.userToStudent(user),
@@ -37,5 +38,12 @@ export class UsersService {
             : this.teachersService.create(
                   this.usersFactoryService.userToTeacher(user),
               );
+    }
+
+    async findByEmail(email: string): Promise<UserEntity> {
+        return this.studentsService.getByEmail(email).catch((err) => {
+            if (err instanceof EntityNotFoundError)
+                return this.teachersService.getByEmail(email);
+        });
     }
 }

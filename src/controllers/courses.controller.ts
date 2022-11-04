@@ -17,6 +17,7 @@ import {
     InscriptionEntity,
     UpdateInscriptionRequest,
 } from 'src/domain';
+import { Public } from 'src/public.decorator';
 import { CommentsService } from 'src/services/comments/comments.service';
 import { CoursesService } from 'src/services/courses/courses.service';
 import { InscriptionsService } from 'src/services/inscriptions/inscriptions.service';
@@ -29,6 +30,7 @@ export class CoursesController {
         private inscriptionsService: InscriptionsService,
     ) {}
 
+    @Public()
     @Get()
     async getAll(): Promise<CourseEntity[]> {
         return this.coursesService.getAll();
@@ -40,6 +42,7 @@ export class CoursesController {
         return this.coursesService.create(course);
     }
 
+    @Public()
     @Post('search')
     @HttpCode(200)
     search(
@@ -48,6 +51,7 @@ export class CoursesController {
         return this.coursesService.search(searchRequest);
     }
 
+    @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<CourseEntity> {
         return this.coursesService.getById(id);
