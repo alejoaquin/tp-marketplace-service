@@ -18,6 +18,10 @@ export class TeachersService {
         return this.teachersRepository.findOneBy({ id: id });
     }
 
+    getByEmail(email: string): Promise<TeacherEntity> {
+        return this.teachersRepository.findOneBy({ email: email });
+    }
+
     create(teacher: TeacherEntity): Promise<TeacherEntity> {
         try {
             const newTeacher = this.teachersRepository.create(teacher);
