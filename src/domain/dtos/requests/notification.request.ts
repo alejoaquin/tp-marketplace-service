@@ -1,4 +1,4 @@
-import { NotificationSource } from '../enums';
+import { NotificationSource } from 'src/domain/enums';
 
 export class NotificationRequest {
     description: string;

@@ -5,9 +5,9 @@ import {
     CommentRequest,
     CourseEntity,
     CourseSearchRequest,
+    EnrollRequest,
     InscriptionEntity,
 } from 'src/domain';
-import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';

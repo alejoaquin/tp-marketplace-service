@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+    EnrollRequest,
     InscriptionEntity,
     StudentEntity,
     UpdateInscriptionRequest,
 } from 'src/domain';
-import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
 
 @Injectable()

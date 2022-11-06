@@ -1,4 +1,4 @@
-import { CourseFrequency, CourseType } from '../enums';
+import { CourseFrequency, CourseType } from 'src/domain/enums';
 
 export class CourseSearchRequest {
     name: string;
