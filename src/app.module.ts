@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
-import config from './configuration/data-source';
+import databaseConfig from './configuration/data-source';
 import { AppController } from './controllers/app.controller';
 import { AuthModule } from './services/auth/auth.module';
 import { JwtAuthGuard } from './services/auth/jwt-auth.guard';
@@ -15,7 +16,10 @@ import { UsersModule } from './services/users/users.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot(config),
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        TypeOrmModule.forRoot(databaseConfig),
         StudentsModule,
         TeachersModule,
         UsersModule,

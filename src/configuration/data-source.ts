@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
-const config: MysqlConnectionOptions = {
+const databaseConfig: MysqlConnectionOptions = {
     type: 'mysql',
     host: 'localhost',
     username: 'root',
@@ -15,4 +15,4 @@ const config: MysqlConnectionOptions = {
     subscribers: ['dist/domain/subscriber/*.js'],
 };
 
-export default config;
+export default databaseConfig;
