@@ -15,7 +15,6 @@ export class UsersController {
         private notificationsService: NotificationsService,
     ) {}
 
-    @Public()
     @Get()
     getAll(): Promise<UserEntity[]> {
         return this.usersService.getAll();
