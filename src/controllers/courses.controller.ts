@@ -118,6 +118,7 @@ export class CoursesController {
         return this.coursesService.addComment(id, comment);
     }
 
+    @Public()
     @Get(':id/comments')
     getComments(@Param('id') id: string): Promise<CommentEntity[]> {
         return this.coursesService.getComments(id);
