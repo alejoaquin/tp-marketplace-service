@@ -105,10 +105,10 @@ export class CoursesService {
         commentRequest: CommentRequest,
     ): Promise<CourseEntity> {
         const course = await this.getById(id);
-        const student = await this.studentService.getById(
-            commentRequest.studentId,
+        const comment = this.commentsService.create(
+            commentRequest,
+            this.studentService.getById(commentRequest.studentId),
         );
-        const comment = this.commentsService.create(commentRequest, student);
         course.comments.push(comment);
         return this.coursesRepository.save(course);
     }

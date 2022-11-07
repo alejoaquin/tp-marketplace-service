@@ -12,7 +12,7 @@ export class CommentEntity {
     description: string;
 
     @ManyToOne(() => StudentEntity, (student) => student.comments)
-    student: StudentEntity;
+    student: Promise<StudentEntity>;
 
     @Column({
         type: 'enum',

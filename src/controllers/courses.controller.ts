@@ -9,6 +9,7 @@ import {
     Put,
 } from '@nestjs/common';
 import {
+    CommentDto,
     CommentEntity,
     CommentRequest,
     CourseEntity,
@@ -125,8 +126,11 @@ export class CoursesController {
     }
 
     @Get(':id/comments/:commentId')
-    getComment(@Param('id') id: string): Promise<CommentEntity> {
-        return this.commentsService.get(id);
+    getComment(
+        @Param('id') id: string,
+        @Param('commentId') commentId: string,
+    ): Promise<CommentDto> {
+        return this.commentsService.get(commentId);
     }
 
     @Put(':id/comments/:commentId')
