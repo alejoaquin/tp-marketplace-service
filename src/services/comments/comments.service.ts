@@ -30,7 +30,6 @@ export class CommentsService {
 
     async get(id: string): Promise<CommentDto> {
         const c = await this.commentRepository.findOneByOrFail({ id: id });
-        console.log(c);
         return await this.commentsFactoryService.toDto(c);
     }
 

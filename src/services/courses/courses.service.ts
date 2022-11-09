@@ -7,11 +7,13 @@ import {
     CourseSearchRequest,
     EnrollRequest,
     InscriptionEntity,
+    PublicCourseDto,
 } from 'src/domain';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';
 import { StudentsService } from '../students/students.service';
+import { CoursesFactoryService } from './courses.factory.service';
 
 @Injectable()
 export class CoursesService {
@@ -21,10 +23,14 @@ export class CoursesService {
         private studentService: StudentsService,
         private commentsService: CommentsService,
         private inscriptionsService: InscriptionsService,
+        private coursesFactoryService: CoursesFactoryService,
     ) {}
 
-    getAll(): Promise<CourseEntity[]> {
-        return this.coursesRepository.find();
+    async getAll(): Promise<PublicCourseDto[]> {
+        const arr = await this.coursesRepository.find();
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+        );
     }
 
     async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
