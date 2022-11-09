@@ -27,7 +27,15 @@ export class CoursesService {
     ) {}
 
     async getAll(): Promise<PublicCourseDto[]> {
+        // TODO: check if we need this getAll without filtering by published
         const arr = await this.coursesRepository.find();
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+        );
+    }
+
+    async getPublished(): Promise<PublicCourseDto[]> {
+        const arr = await this.coursesRepository.findBy({ published: true });
         return Promise.all(
             arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
         );

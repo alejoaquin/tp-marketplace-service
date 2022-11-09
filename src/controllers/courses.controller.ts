@@ -16,6 +16,7 @@ import {
     CourseSearchRequest,
     EnrollRequest,
     InscriptionEntity,
+    PublicCourseDto,
     UpdateInscriptionRequest,
 } from 'src/domain';
 import { Public } from 'src/public.decorator';
@@ -33,8 +34,8 @@ export class CoursesController {
 
     @Public()
     @Get()
-    async getAll(): Promise<CourseEntity[]> {
-        return this.coursesService.getAll();
+    async getAll(): Promise<PublicCourseDto[]> {
+        return this.coursesService.getPublished();
     }
 
     @Post()
