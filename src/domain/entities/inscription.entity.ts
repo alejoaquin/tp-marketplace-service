@@ -24,7 +24,7 @@ export class InscriptionEntity {
     timeRangeTo: string;
 
     @ManyToOne(() => StudentEntity, (student) => student.inscriptions)
-    student: StudentEntity;
+    student: Promise<StudentEntity>;
 
     @Column({
         type: 'enum',

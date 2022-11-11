@@ -15,7 +15,9 @@ export class InscriptionsFactoryService {
         dto.timeRangeFrom = entity.timeRangeFrom;
         dto.timeRangeTo = entity.timeRangeTo;
         dto.status = entity.status;
-        dto.student = this.usersFactoryService.userToBasicDto(entity.student);
+        dto.student = this.usersFactoryService.userToBasicDto(
+            await entity.student,
+        );
         return dto;
     }
 }

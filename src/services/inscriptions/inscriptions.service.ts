@@ -28,7 +28,7 @@ export class InscriptionsService {
         inscription.reason = enrollRequest.reason;
         inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
         inscription.timeRangeTo = enrollRequest.timeRangeTo;
-        inscription.student = student;
+        inscription.student = Promise.resolve(student);
         return inscription;
     }
 
@@ -40,21 +40,10 @@ export class InscriptionsService {
     }
 
     async getByCourse(courseId: string): Promise<InscriptionDto[]> {
-        const entities = await this.inscriptionRepository
-            .createQueryBuilder('inscription_entity')
-            .where('inscription_entity.id = :courseId', { courseId })
-            .getMany();
-        return Promise.all(
-            entities.map((entity) =>
-                this.inscriptionsFactoryService.toDto(entity),
-            ),
-        );
-    }
-
-    async getByCourse2(courseId: string): Promise<InscriptionDto[]> {
         const entities = await this.inscriptionRepository.findBy({
             course: { id: courseId },
         });
+
         return Promise.all(
             entities.map((entity) =>
                 this.inscriptionsFactoryService.toDto(entity),
