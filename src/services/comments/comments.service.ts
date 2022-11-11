@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     CommentDto,
@@ -33,24 +33,40 @@ export class CommentsService {
         return await this.commentsFactoryService.toDto(c);
     }
 
-    async update(
-        courseId: string,
-        commentId: string,
-        commentRequest: CommentRequest,
-    ): Promise<CommentEntity> {
-        const comment = await this.commentRepository.findOneByOrFail({
-            id: commentId,
+    async getByCourse(courseId: string): Promise<CommentDto[]> {
+        const entities = await this.commentRepository.findBy({
+            course: { id: courseId },
         });
-        const course = await comment.course;
-        if (course.id != courseId) {
-            throw new BadRequestException(); // TODO: check error message
-        }
+        return Promise.all(
+            entities.map((entity) => this.commentsFactoryService.toDto(entity)),
+        );
+    }
+
+    async getByIdAndCourse(id: string, courseId: string): Promise<CommentDto> {
+        const entity = await this.commentRepository.findOneByOrFail({
+            id: id,
+            course: { id: courseId },
+        });
+        return this.commentsFactoryService.toDto(entity);
+    }
+
+    async update(
+        id: string,
+        courseId: string,
+        commentRequest: CommentRequest,
+    ): Promise<CommentDto> {
+        const comment = await this.commentRepository.findOneByOrFail({
+            id: id,
+            course: { id: courseId },
+        });
+        // TODO: send notification if the comment is block
         comment.status = commentRequest.status;
 
         if (commentRequest.status === CommentStatus.BLOCKED)
             comment.blockReason = commentRequest.description;
         else comment.description = commentRequest.description;
 
-        return this.commentRepository.save(comment);
+        const entity = await this.commentRepository.save(comment);
+        return this.commentsFactoryService.toDto(entity);
     }
 }

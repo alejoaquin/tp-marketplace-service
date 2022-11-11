@@ -10,15 +10,16 @@ import {
 } from '@nestjs/common';
 import {
     CommentDto,
-    CommentEntity,
     CommentRequest,
     CourseEntity,
     CourseSearchRequest,
+    CreateCourseRequest,
     EnrollRequest,
-    InscriptionEntity,
+    InscriptionDto,
     PublicCourseDto,
     UpdateInscriptionRequest,
 } from 'src/domain';
+import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { Public } from 'src/public.decorator';
 import { CommentsService } from 'src/services/comments/comments.service';
 import { CoursesService } from 'src/services/courses/courses.service';
@@ -34,13 +35,13 @@ export class CoursesController {
 
     @Public()
     @Get()
-    async getAll(): Promise<PublicCourseDto[]> {
+    async getPublished(): Promise<PublicCourseDto[]> {
         return this.coursesService.getPublished();
     }
 
     @Post()
     @HttpCode(201)
-    create(@Body() course: CourseEntity): Promise<CourseEntity> {
+    create(@Body() course: CreateCourseRequest): Promise<CompleteCourseDto> {
         return this.coursesService.create(course);
     }
 
@@ -49,13 +50,13 @@ export class CoursesController {
     @HttpCode(200)
     search(
         @Body() searchRequest: CourseSearchRequest,
-    ): Promise<CourseEntity[]> {
+    ): Promise<PublicCourseDto[]> {
         return this.coursesService.search(searchRequest);
     }
 
     @Public()
     @Get(':id')
-    async getById(@Param('id') id: string): Promise<CourseEntity> {
+    async getById(@Param('id') id: string): Promise<CompleteCourseDto> {
         return this.coursesService.getById(id);
     }
 
@@ -64,13 +65,13 @@ export class CoursesController {
     update(
         @Param('id') id: string,
         @Body() course: CourseEntity,
-    ): Promise<CourseEntity> {
+    ): Promise<CompleteCourseDto> {
         return this.coursesService.update(id, course);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id: string): Promise<CourseEntity> {
+    delete(@Param('id') id: string): Promise<CompleteCourseDto> {
         return this.coursesService.delete(id);
     }
 
@@ -79,23 +80,21 @@ export class CoursesController {
     enroll(
         @Param('id') id: string,
         @Body() enrollRequest: EnrollRequest,
-    ): Promise<CourseEntity> {
+    ): Promise<PublicCourseDto> {
         return this.coursesService.enroll(id, enrollRequest);
     }
 
     @Get(':id/inscriptions')
-    async getInscriptions(
-        @Param('id') id: string,
-    ): Promise<InscriptionEntity[]> {
-        return this.coursesService.getInscriptions(id);
+    async getInscriptions(@Param('id') id: string): Promise<InscriptionDto[]> {
+        return this.inscriptionsService.getByCourse(id);
     }
 
     @Get(':id/inscriptions/:inscriptionId')
     async getInscriptionById(
         @Param('id') id: string,
         @Param('inscriptionId') inscriptionId: string,
-    ): Promise<InscriptionEntity> {
-        return this.coursesService.getInscriptionById(id, inscriptionId);
+    ): Promise<InscriptionDto> {
+        return this.inscriptionsService.getByIdAndCourse(inscriptionId, id);
     }
 
     @Put(':id/inscriptions/:inscriptionId')
@@ -103,7 +102,7 @@ export class CoursesController {
         @Param('id') id: string,
         @Param('inscriptionId') inscriptionId: string,
         @Body() updateRequest: UpdateInscriptionRequest,
-    ): Promise<InscriptionEntity> {
+    ): Promise<InscriptionDto> {
         return this.inscriptionsService.update(
             id,
             inscriptionId,
@@ -122,8 +121,8 @@ export class CoursesController {
 
     @Public()
     @Get(':id/comments')
-    getComments(@Param('id') id: string): Promise<CommentEntity[]> {
-        return this.coursesService.getComments(id);
+    getComments(@Param('id') id: string): Promise<CommentDto[]> {
+        return this.commentsService.getByCourse(id);
     }
 
     @Get(':id/comments/:commentId')
@@ -131,7 +130,7 @@ export class CoursesController {
         @Param('id') id: string,
         @Param('commentId') commentId: string,
     ): Promise<CommentDto> {
-        return this.commentsService.get(commentId);
+        return this.commentsService.getByIdAndCourse(commentId, id);
     }
 
     @Put(':id/comments/:commentId')
@@ -139,7 +138,7 @@ export class CoursesController {
         @Param('id') id: string,
         @Param('commentId') commentId: string,
         @Body() updateRequest: CommentRequest,
-    ): Promise<CommentEntity> {
+    ): Promise<CommentDto> {
         return this.commentsService.update(id, commentId, updateRequest);
     }
 }

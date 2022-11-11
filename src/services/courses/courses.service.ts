@@ -1,14 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-    CommentEntity,
     CommentRequest,
     CourseEntity,
     CourseSearchRequest,
+    CreateCourseRequest,
     EnrollRequest,
-    InscriptionEntity,
     PublicCourseDto,
 } from 'src/domain';
+import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';
@@ -26,11 +26,11 @@ export class CoursesService {
         private coursesFactoryService: CoursesFactoryService,
     ) {}
 
-    async getAll(): Promise<PublicCourseDto[]> {
+    async getAll(): Promise<CompleteCourseDto[]> {
         // TODO: check if we need this getAll without filtering by published
         const arr = await this.coursesRepository.find();
         return Promise.all(
-            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+            arr.map((ac) => this.coursesFactoryService.toCompleteDto(ac)),
         );
     }
 
@@ -41,29 +41,37 @@ export class CoursesService {
         );
     }
 
-    async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
-        return this.coursesRepository.findBy({
+    async search(
+        searchRequest: CourseSearchRequest,
+    ): Promise<PublicCourseDto[]> {
+        const arr = await this.coursesRepository.findBy({
             name: searchRequest.name,
             subject: searchRequest.subject,
             frequency: searchRequest.frequency,
             rating: searchRequest.rating,
             type: searchRequest.type,
+            published: true,
         });
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+        );
     }
 
-    getById(id: string): Promise<CourseEntity> {
-        return this.coursesRepository.findOneByOrFail({ id: id });
+    async getById(id: string): Promise<CompleteCourseDto> {
+        const entity = await this.coursesRepository.findOneByOrFail({ id: id });
+        return this.coursesFactoryService.toCompleteDto(entity);
     }
 
-    create(course: CourseEntity): Promise<CourseEntity> {
-        return this.coursesRepository.save(course);
+    async create(course: CreateCourseRequest): Promise<CompleteCourseDto> {
+        const entity = await this.coursesRepository.save(course); // TODO: fix this
+        return this.coursesFactoryService.toCompleteDto(entity);
     }
 
     async update(
         id: string,
         updateRequest: CourseEntity,
-    ): Promise<CourseEntity> {
-        const course = await this.getById(id);
+    ): Promise<CompleteCourseDto> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.name = updateRequest.name;
         course.subject = updateRequest.subject;
         course.duration = updateRequest.duration;
@@ -72,19 +80,20 @@ export class CoursesService {
         course.description = updateRequest.description;
         course.type = updateRequest.type;
         course.imgSrc = updateRequest.imgSrc;
-        return this.coursesRepository.save(course);
+        const entity = await this.coursesRepository.save(course);
+        return this.coursesFactoryService.toCompleteDto(entity);
     }
 
-    async delete(id: string): Promise<CourseEntity> {
-        const course = await this.getById(id);
-        return this.coursesRepository.remove(course);
+    async delete(id: string): Promise<CompleteCourseDto> {
+        const response = await this.coursesRepository.delete({ id: id });
+        return this.coursesFactoryService.toCompleteDto(response.raw);
     }
 
     async enroll(
         id: string,
         enrollRequest: EnrollRequest,
-    ): Promise<CourseEntity> {
-        const course = await this.getById(id);
+    ): Promise<PublicCourseDto> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
         const student = await this.studentService.getById(
             enrollRequest.studentId,
         );
@@ -94,41 +103,20 @@ export class CoursesService {
         );
 
         course.inscriptions.push(inscription);
-        return this.coursesRepository.save(course);
-    }
-
-    async getInscriptions(id: string): Promise<InscriptionEntity[]> {
-        const course = await this.getById(id);
-        return course.inscriptions;
-    }
-
-    async getInscriptionById(
-        id: string,
-        inscriptionId: string,
-    ): Promise<InscriptionEntity> {
-        const inscriptions = await this.getInscriptions(id).then((arr) =>
-            arr.filter((i) => i.id === inscriptionId),
-        );
-        if (inscriptions == null || inscriptions.length < 1)
-            throw new NotFoundException();
-        return inscriptions.pop();
+        const entity = await this.coursesRepository.save(course);
+        return this.coursesFactoryService.toPublicDto(entity);
     }
 
     async addComment(
         id: string,
         commentRequest: CommentRequest,
     ): Promise<CourseEntity> {
-        const course = await this.getById(id);
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
         const comment = this.commentsService.create(
             commentRequest,
             this.studentService.getById(commentRequest.studentId),
         );
         course.comments.push(comment);
         return this.coursesRepository.save(course);
-    }
-
-    async getComments(id: string): Promise<CommentEntity[]> {
-        const course = await this.getById(id);
-        return course.comments;
     }
 }
