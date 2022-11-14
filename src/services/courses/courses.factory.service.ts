@@ -10,6 +10,7 @@ import {
 import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { CommentsFactoryService } from '../comments/comments.factory.service';
 import { InscriptionsFactoryService } from '../inscriptions/inscriptions.factory.service';
+import { TeachersFactoryService } from '../teacher/teachers-factory.service';
 import { UsersFactoryService } from '../users/users-factory.service';
 
 @Injectable()
@@ -18,6 +19,7 @@ export class CoursesFactoryService {
         private usersFactoryService: UsersFactoryService,
         private commentsFactoryService: CommentsFactoryService,
         private inscriptionsFactoryService: InscriptionsFactoryService,
+        private teachersFactoryService: TeachersFactoryService,
     ) {}
 
     async toPublicDto(entity: CourseEntity): Promise<PublicCourseDto> {
@@ -31,7 +33,7 @@ export class CoursesFactoryService {
         dto.description = entity.description;
         dto.rating = entity.rating;
         dto.type = entity.type;
-        dto.teacher = this.usersFactoryService.userToBasicDto(
+        dto.teacher = this.teachersFactoryService.toBasicDto(
             await entity.teacher,
         );
         dto.comments = await this.getComments(entity);

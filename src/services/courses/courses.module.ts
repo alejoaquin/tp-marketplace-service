@@ -5,6 +5,7 @@ import { CourseEntity, RatingEntity, TeacherEntity } from 'src/domain';
 import { CommentsModule } from '../comments/comments.module';
 import { InscriptionsModule } from '../inscriptions/inscriptions.module';
 import { StudentsModule } from '../students/students.module';
+import { TeachersModule } from '../teacher/teachers.module';
 import { UsersModule } from '../users/users.module';
 import { CoursesFactoryService } from './courses.factory.service';
 import { CoursesService } from './courses.service';
@@ -16,6 +17,7 @@ import { CoursesService } from './courses.service';
         CommentsModule,
         InscriptionsModule,
         UsersModule,
+        TeachersModule,
     ],
     providers: [CoursesService, CoursesFactoryService],
     controllers: [CoursesController],
