@@ -1,16 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+    CommentDto,
     CommentRequest,
     CourseDto,
     CourseEntity,
     CourseSearchRequest,
     CreateCourseRequest,
     EnrollRequest,
+    InscriptionDto,
     TeacherEntity,
 } from 'src/domain';
 import { Repository } from 'typeorm';
+import { CommentsFactoryService } from '../comments/comments.factory.service';
 import { CommentsService } from '../comments/comments.service';
+import { InscriptionsFactoryService } from '../inscriptions/inscriptions.factory.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';
 import { StudentsService } from '../students/students.service';
 import { CoursesFactoryService } from './courses.factory.service';
@@ -24,7 +28,9 @@ export class CoursesService {
         private teacherRepository: Repository<TeacherEntity>,
         private studentService: StudentsService,
         private commentsService: CommentsService,
+        private commentsFactoryService: CommentsFactoryService,
         private inscriptionsService: InscriptionsService,
+        private inscriptionsFactoryService: InscriptionsFactoryService,
         private coursesFactoryService: CoursesFactoryService,
     ) {}
 
@@ -82,7 +88,7 @@ export class CoursesService {
         return this.coursesFactoryService.toDto(curse, false);
     }
 
-    async update(id: string, updateRequest: CourseEntity): Promise<CourseDto> {
+    async update(id: string, updateRequest: CourseEntity): Promise<void> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.name = updateRequest.name;
         course.subject = updateRequest.subject;
@@ -92,15 +98,17 @@ export class CoursesService {
         course.description = updateRequest.description;
         course.type = updateRequest.type;
         course.imgSrc = updateRequest.imgSrc;
-        const entity = await this.coursesRepository.save(course);
-        return this.coursesFactoryService.toDto(entity, false);
+        await this.coursesRepository.save(course);
     }
 
     async delete(id: string): Promise<void> {
         await this.coursesRepository.delete({ id: id });
     }
 
-    async enroll(id: string, enrollRequest: EnrollRequest): Promise<CourseDto> {
+    async enroll(
+        id: string,
+        enrollRequest: EnrollRequest,
+    ): Promise<InscriptionDto> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         if (!course.published) {
             throw new BadRequestException(
@@ -116,19 +124,21 @@ export class CoursesService {
         );
         course.inscriptions.push(inscription);
         const entity = await this.coursesRepository.save(course);
-        return this.coursesFactoryService.toDto(entity, true);
+        await this.coursesFactoryService.toDto(entity, true);
+        return this.inscriptionsFactoryService.toDto(inscription);
     }
 
     async addComment(
         id: string,
         commentRequest: CommentRequest,
-    ): Promise<CourseEntity> {
+    ): Promise<CommentDto> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         const comment = this.commentsService.create(
             commentRequest,
             this.studentService.getById(commentRequest.studentId),
         );
         course.comments.push(comment);
-        return this.coursesRepository.save(course);
+        await this.coursesRepository.save(course);
+        return this.commentsFactoryService.toDto(comment);
     }
 }

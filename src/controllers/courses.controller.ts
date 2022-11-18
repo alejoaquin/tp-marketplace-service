@@ -62,7 +62,7 @@ export class CoursesController {
     update(
         @Param('id') id: string,
         @Body() course: CourseEntity,
-    ): Promise<CourseDto> {
+    ): Promise<void> {
         return this.coursesService.update(id, course);
     }
 
@@ -77,7 +77,7 @@ export class CoursesController {
     enroll(
         @Param('id') id: string,
         @Body() enrollRequest: EnrollRequest,
-    ): Promise<CourseDto> {
+    ): Promise<InscriptionDto> {
         return this.coursesService.enroll(id, enrollRequest);
     }
 
@@ -112,7 +112,7 @@ export class CoursesController {
     comment(
         @Param('id') id: string,
         @Body() comment: CommentRequest,
-    ): Promise<CourseEntity> {
+    ): Promise<CommentDto> {
         return this.coursesService.addComment(id, comment);
     }
 
