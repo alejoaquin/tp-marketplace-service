@@ -22,6 +22,8 @@ export class EducationEntity {
     })
     status: string;
 
-    @ManyToOne(() => StudentEntity, (student) => student.educationalDegrees)
+    @ManyToOne(() => StudentEntity, (student) => student.educationalDegrees, {
+        onDelete: 'CASCADE',
+    })
     student: StudentEntity;
 }

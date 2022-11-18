@@ -29,15 +29,19 @@ export class StudentEntity extends UserEntity {
     })
     educationalDegrees: EducationEntity[];
 
-    @OneToMany(() => CommentEntity, (comment) => comment.student)
+    @OneToMany(() => CommentEntity, (comment) => comment.student, {
+        cascade: true,
+    })
     comments: CommentEntity[];
 
-    @OneToMany(() => RatingEntity, (rating) => rating.student)
+    @OneToMany(() => RatingEntity, (rating) => rating.student, {
+        cascade: true,
+    })
     ratings: RatingEntity[];
 
     @OneToMany(() => InscriptionEntity, (inscription) => inscription.student, {
         eager: true,
-        cascade: false,
+        cascade: true,
     })
     inscriptions: InscriptionEntity[];
 }

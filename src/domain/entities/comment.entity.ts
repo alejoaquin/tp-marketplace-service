@@ -11,7 +11,9 @@ export class CommentEntity {
     @Column()
     description: string;
 
-    @ManyToOne(() => StudentEntity, (student) => student.comments)
+    @ManyToOne(() => StudentEntity, (student) => student.comments, {
+        onDelete: 'CASCADE',
+    })
     student: Promise<StudentEntity>;
 
     @Column({
@@ -24,6 +26,8 @@ export class CommentEntity {
     @Column({ nullable: true })
     blockReason: string;
 
-    @ManyToOne(() => CourseEntity, (course) => course.comments)
+    @ManyToOne(() => CourseEntity, (course) => course.comments, {
+        onDelete: 'CASCADE',
+    })
     course: Promise<CourseEntity>;
 }

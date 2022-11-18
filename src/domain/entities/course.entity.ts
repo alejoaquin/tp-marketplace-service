@@ -47,7 +47,9 @@ export class CourseEntity {
     })
     type: CourseType;
 
-    @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses)
+    @ManyToOne(() => TeacherEntity, (teacher) => teacher.courses, {
+        onDelete: 'CASCADE',
+    })
     teacher: Promise<TeacherEntity>;
 
     @OneToMany(() => CommentEntity, (comment) => comment.course, {
