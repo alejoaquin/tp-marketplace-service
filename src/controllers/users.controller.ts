@@ -1,11 +1,12 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import {
-    NotificationEntity,
+    NotificationDto,
     NotificationRequest,
     UserDto,
     UserEntity,
 } from 'src/domain';
 import { Public } from 'src/public.decorator';
+import { NotificationsFactoryService } from 'src/services/notifications/notifications-factory.service';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
 import { UsersFactoryService } from 'src/services/users/users-factory.service';
 import { UsersService } from 'src/services/users/users.service';
@@ -16,6 +17,7 @@ export class UsersController {
         private usersService: UsersService,
         private notificationsService: NotificationsService,
         private usersFactoryService: UsersFactoryService,
+        private notificationsFactoryService: NotificationsFactoryService,
     ) {}
 
     @Get()
@@ -41,22 +43,31 @@ export class UsersController {
     }
 
     @Get(':id/notifications')
-    getNotifications(@Param('id') id: string): Promise<NotificationEntity[]> {
-        return this.notificationsService.getAll(id);
+    async getNotifications(
+        @Param('id') id: string,
+    ): Promise<NotificationDto[]> {
+        const arr = await this.notificationsService.getAll(id);
+        return Promise.all(
+            arr.map((n) => this.notificationsFactoryService.toDto(n)),
+        );
     }
 
     @Post(':id/notifications')
     @HttpCode(201)
-    createNotification(
+    async createNotification(
         @Param('id') id: string,
         @Body() notification: NotificationRequest,
-    ): Promise<NotificationEntity> {
-        return this.notificationsService.create(id, notification);
+    ): Promise<NotificationDto> {
+        const entity = await this.notificationsService.create(id, notification);
+        return this.notificationsFactoryService.toDto(entity);
     }
 
     @Post(':id/notifications/:notificationId')
-    @HttpCode(204)
-    reedNotification(@Param('notificationId') id: string): Promise<void> {
-        return this.notificationsService.read(id);
+    @HttpCode(200)
+    async reedNotification(
+        @Param('notificationId') id: string,
+    ): Promise<NotificationDto> {
+        const entity = await this.notificationsService.read(id);
+        return this.notificationsFactoryService.toDto(entity);
     }
 }
