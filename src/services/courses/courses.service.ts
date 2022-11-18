@@ -5,6 +5,7 @@ import {
     CourseEntity,
     CourseSearchRequest,
     InscriptionEntity,
+    RatingEntity,
     TeacherEntity,
 } from 'src/domain';
 import { Repository } from 'typeorm';
@@ -102,5 +103,17 @@ export class CoursesService {
         course.comments.push(comment);
         await this.coursesRepository.save(course);
         return comment;
+    }
+
+    async addRating(id: string, rating: RatingEntity): Promise<RatingEntity> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
+        course.ratings.push(rating);
+        course.rating =
+            course.ratings
+                .map((r) => r.score)
+                .reduce((partialSum, a) => partialSum + a, 0) /
+            course.ratings.length;
+        await this.coursesRepository.save(course);
+        return rating;
     }
 }
