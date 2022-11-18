@@ -1,60 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-    CommentDto,
-    CommentEntity,
-    CommentRequest,
-    CommentStatus,
-    StudentEntity,
-} from 'src/domain';
+import { CommentEntity, CommentStatus } from 'src/domain';
 import { Repository } from 'typeorm';
-import { CommentsFactoryService } from './comments.factory.service';
 
 @Injectable()
 export class CommentsService {
     constructor(
         @InjectRepository(CommentEntity)
         private commentRepository: Repository<CommentEntity>,
-        private commentsFactoryService: CommentsFactoryService,
     ) {}
 
-    create(
-        commentRequest: CommentRequest,
-        student: Promise<StudentEntity>,
-    ): CommentEntity {
-        const comment = new CommentEntity();
-        comment.description = commentRequest.description;
-        comment.student = student;
-        return comment;
+    get(id: string): Promise<CommentEntity> {
+        return this.commentRepository.findOneByOrFail({ id: id });
     }
 
-    async get(id: string): Promise<CommentDto> {
-        const c = await this.commentRepository.findOneByOrFail({ id: id });
-        return await this.commentsFactoryService.toDto(c);
-    }
-
-    async getByCourse(courseId: string): Promise<CommentDto[]> {
-        const entities = await this.commentRepository.findBy({
+    getByCourse(courseId: string): Promise<CommentEntity[]> {
+        return this.commentRepository.findBy({
             course: { id: courseId },
         });
-        return Promise.all(
-            entities.map((entity) => this.commentsFactoryService.toDto(entity)),
-        );
     }
 
-    async getByIdAndCourse(id: string, courseId: string): Promise<CommentDto> {
-        const entity = await this.commentRepository.findOneByOrFail({
+    getByIdAndCourse(id: string, courseId: string): Promise<CommentEntity> {
+        return this.commentRepository.findOneByOrFail({
             id: id,
             course: { id: courseId },
         });
-        return this.commentsFactoryService.toDto(entity);
     }
 
     async update(
         id: string,
         courseId: string,
-        commentRequest: CommentRequest,
-    ): Promise<CommentDto> {
+        commentRequest: CommentEntity,
+    ): Promise<void> {
         const comment = await this.commentRepository.findOneByOrFail({
             id: id,
             course: { id: courseId },
@@ -66,7 +43,6 @@ export class CommentsService {
             comment.blockReason = commentRequest.description;
         else comment.description = commentRequest.description;
 
-        const entity = await this.commentRepository.save(comment);
-        return this.commentsFactoryService.toDto(entity);
+        await this.commentRepository.save(comment);
     }
 }
