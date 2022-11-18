@@ -55,6 +55,7 @@ export class CoursesFactoryService {
         entity.description = request.description;
         entity.type = request.type;
         entity.imgSrc = request.imgSrc;
+        entity.published = request.published;
         return entity;
     }
 

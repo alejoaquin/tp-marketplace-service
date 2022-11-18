@@ -10,4 +10,5 @@ export class CourseRequest {
     type: CourseType;
     teacherId: string;
     imgSrc: string;
+    published: boolean;
 }
