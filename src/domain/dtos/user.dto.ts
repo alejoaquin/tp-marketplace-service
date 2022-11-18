@@ -1,13 +1,11 @@
 import { Role } from '../enums';
 
-export class TeacherDto {
+export class UserDto {
     id: string;
     firstname: string;
     lastname: string;
-    title: string;
-    experience: string;
     phone: number;
     email: string;
-    role: Role;
     password: string;
+    role: Role;
 }

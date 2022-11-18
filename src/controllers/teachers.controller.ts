@@ -9,21 +9,29 @@ import {
 } from '@nestjs/common';
 import { TeacherDto } from 'src/domain';
 import { Public } from 'src/public.decorator';
+import { TeachersFactoryService } from 'src/services/teacher/teachers-factory.service';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
 @Controller('teachers')
 export class TeachersController {
-    constructor(private teachersService: TeachersService) {}
+    constructor(
+        private teachersService: TeachersService,
+        private teachersFactoryService: TeachersFactoryService,
+    ) {}
 
     @Get()
     async getAll(): Promise<TeacherDto[]> {
-        return this.teachersService.getAll();
+        const arr = await this.teachersService.getAll();
+        return Promise.all(
+            arr.map((t) => this.teachersFactoryService.toDto(t)),
+        );
     }
 
     @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<TeacherDto> {
-        return this.teachersService.getById(id);
+        const entity = await this.teachersService.getById(id);
+        return this.teachersFactoryService.toDto(entity);
     }
 
     @Put(':id')
@@ -31,7 +39,10 @@ export class TeachersController {
         @Param('id') id: string,
         @Body() teacher: TeacherDto,
     ): Promise<void> {
-        return this.teachersService.update(id, teacher);
+        return this.teachersService.update(
+            id,
+            this.teachersFactoryService.toEntity(teacher),
+        );
     }
 
     @Delete(':id')

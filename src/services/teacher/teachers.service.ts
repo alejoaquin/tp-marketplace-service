@@ -1,41 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TeacherDto, TeacherEntity } from 'src/domain';
+import { TeacherEntity } from 'src/domain';
 import { Repository } from 'typeorm';
-import { TeachersFactoryService } from './teachers-factory.service';
 
 @Injectable()
 export class TeachersService {
     constructor(
         @InjectRepository(TeacherEntity)
         private teachersRepository: Repository<TeacherEntity>,
-        private teachersFactoryService: TeachersFactoryService,
     ) {}
 
-    async getAll(): Promise<TeacherDto[]> {
-        const arr = await this.teachersRepository.find();
-        return Promise.all(
-            arr.map((t) => this.teachersFactoryService.toDto(t)),
-        );
+    getAll(): Promise<TeacherEntity[]> {
+        return this.teachersRepository.find();
     }
 
-    async getById(id: string): Promise<TeacherDto> {
-        const entity = await this.teachersRepository.findOneBy({ id: id });
-        return this.teachersFactoryService.toDto(entity);
+    getById(id: string): Promise<TeacherEntity> {
+        return this.teachersRepository.findOneBy({ id: id });
     }
 
     getByEmail(email: string): Promise<TeacherEntity> {
         return this.teachersRepository.findOneBy({ email: email });
     }
 
-    async create(teacher: TeacherEntity): Promise<TeacherDto> {
-        const newTeacher = await this.teachersRepository.save(teacher);
-        return this.teachersFactoryService.toDto(newTeacher);
+    create(teacher: TeacherEntity): Promise<TeacherEntity> {
+        return this.teachersRepository.save(teacher);
     }
 
-    async update(id: string, teacher: TeacherDto): Promise<void> {
+    async update(id: string, teacher: TeacherEntity): Promise<void> {
         const entity = await this.teachersRepository.findOneBy({ id: id });
-        entity.firstname = teacher.name;
+        entity.firstname = teacher.firstname;
         entity.lastname = teacher.lastname;
         entity.title = teacher.title;
         entity.experience = teacher.experience;
