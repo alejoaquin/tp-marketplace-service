@@ -5,10 +5,12 @@ import {
     CourseEntity,
     CourseRequest,
     InscriptionDto,
+    RatingDto,
 } from 'src/domain';
 import { CourseDto } from 'src/domain/dtos/course.dto';
 import { CommentsFactoryService } from '../comments/comments.factory.service';
 import { InscriptionsFactoryService } from '../inscriptions/inscriptions.factory.service';
+import { RatingsFactoryService } from '../ratings/ratings-factory.service';
 import { TeachersFactoryService } from '../teacher/teachers-factory.service';
 
 @Injectable()
@@ -17,6 +19,7 @@ export class CoursesFactoryService {
         private commentsFactoryService: CommentsFactoryService,
         private inscriptionsFactoryService: InscriptionsFactoryService,
         private teachersFactoryService: TeachersFactoryService,
+        private ratingsFactoryService: RatingsFactoryService,
     ) {}
 
     async toDto(entity: CourseEntity, published: boolean): Promise<CourseDto> {
@@ -41,6 +44,9 @@ export class CoursesFactoryService {
 
         if (entity.inscriptions !== undefined) {
             dto.inscriptions = await this.getInscriptions(entity);
+        }
+        if (entity.ratings !== undefined) {
+            dto.ratings = await this.getRatings(entity);
         }
         return dto;
     }
@@ -80,6 +86,12 @@ export class CoursesFactoryService {
             entity.inscriptions.map((c) =>
                 this.inscriptionsFactoryService.toDto(c),
             ),
+        );
+    }
+
+    private async getRatings(entity: CourseEntity): Promise<RatingDto[]> {
+        return Promise.all(
+            entity.ratings.map((c) => this.ratingsFactoryService.toDto(c)),
         );
     }
 }

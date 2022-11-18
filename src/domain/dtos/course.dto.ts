@@ -1,4 +1,4 @@
-import { CommentDto, InscriptionDto, TeacherDto } from '..';
+import { CommentDto, InscriptionDto, RatingDto, TeacherDto } from '..';
 import { CourseFrequency, CourseType } from '../enums';
 
 export class CourseDto {
@@ -16,4 +16,5 @@ export class CourseDto {
     published: boolean;
     imgSrc: string;
     inscriptions: InscriptionDto[];
+    ratings: RatingDto[];
 }
