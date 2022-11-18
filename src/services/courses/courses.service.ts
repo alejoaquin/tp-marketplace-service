@@ -65,6 +65,15 @@ export class CoursesService {
         return this.coursesFactoryService.toCompleteDto(entity);
     }
 
+    async getByTeacher(id: string): Promise<CompleteCourseDto[]> {
+        const arr = await this.coursesRepository.findBy({
+            teacher: { id: id },
+        });
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toCompleteDto(ac)),
+        );
+    }
+
     async create(request: CreateCourseRequest): Promise<CompleteCourseDto> {
         const teacher = await this.teacherRepository.findOneByOrFail({
             id: request.teacherId,
