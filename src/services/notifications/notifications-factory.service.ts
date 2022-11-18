@@ -12,6 +12,7 @@ export class NotificationsFactoryService {
         dto.objectId = entity.objectId;
         dto.seen = entity.seen;
         dto.source = entity.source;
+        dto.courseId = entity.courseId;
         return dto;
     }
 }

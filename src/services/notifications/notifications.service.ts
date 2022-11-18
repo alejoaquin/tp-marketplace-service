@@ -52,6 +52,7 @@ export class NotificationsService {
             userId: userId,
             objectId: request.objectId,
             source: request.source,
+            courseId: request.courseId,
         });
 
         return this.notificationsRepository.save(notification);

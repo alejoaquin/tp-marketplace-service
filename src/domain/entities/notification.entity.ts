@@ -15,6 +15,9 @@ export class NotificationEntity {
     @Column()
     objectId: string;
 
+    @Column()
+    courseId: string;
+
     @Column({ default: false })
     seen: boolean;
 

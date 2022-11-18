@@ -6,4 +6,5 @@ export class NotificationDto {
     objectId: string;
     seen: boolean;
     source: NotificationSource;
+    courseId: string;
 }

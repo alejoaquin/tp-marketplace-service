@@ -4,4 +4,5 @@ export class NotificationRequest {
     description: string;
     objectId: string;
     source: NotificationSource;
+    courseId: string;
 }
