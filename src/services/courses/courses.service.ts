@@ -41,9 +41,24 @@ export class CoursesService {
         return this.coursesRepository.findOneByOrFail({ id: id });
     }
 
-    async getByTeacher(id: string): Promise<CourseEntity[]> {
+    getByTeacher(teacherId: string): Promise<CourseEntity[]> {
         return this.coursesRepository.findBy({
-            teacher: { id: id },
+            teacher: { id: teacherId },
+        });
+    }
+
+    getByStudent(studentId: string): Promise<CourseEntity[]> {
+        return this.coursesRepository.find({
+            relations: {
+                comments: true,
+                ratings: true,
+                inscriptions: true,
+            },
+            where: {
+                inscriptions: {
+                    student: { id: studentId },
+                },
+            },
         });
     }
 

@@ -81,6 +81,22 @@ export class CoursesController {
         return this.coursesFactoryService.toDto(entity, false);
     }
 
+    @Get('by-teacher/:id')
+    async getByTeacher(@Param('id') id: string): Promise<CourseDto[]> {
+        const arr = await this.coursesService.getByTeacher(id);
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, false)),
+        );
+    }
+
+    @Get('by-student/:id')
+    async getByStudent(@Param('id') id: string): Promise<CourseDto[]> {
+        const arr = await this.coursesService.getByStudent(id);
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
+        );
+    }
+
     @Put(':id')
     @HttpCode(200)
     async update(
