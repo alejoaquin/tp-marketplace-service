@@ -1,6 +1,7 @@
 export * from './comment.dto';
 export * from './course.dto';
 export * from './inscription.dto';
+export * from './notification.dto';
 export * from './rating.dto';
 export * from './requests';
 export * from './student.dto';

@@ -5,6 +5,7 @@ import {
     InscriptionEntity,
     NotificationEntity,
 } from 'src/domain';
+import { NotificationsFactoryService } from './notifications-factory.service';
 import { NotificationsService } from './notifications.service';
 
 @Module({
@@ -15,8 +16,8 @@ import { NotificationsService } from './notifications.service';
             InscriptionEntity,
         ]),
     ],
-    providers: [NotificationsService],
+    providers: [NotificationsService, NotificationsFactoryService],
     controllers: [],
-    exports: [NotificationsService],
+    exports: [NotificationsService, NotificationsFactoryService],
 })
 export class NotificationsModule {}
