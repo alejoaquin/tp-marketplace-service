@@ -11,15 +11,14 @@ import {
 import {
     CommentDto,
     CommentRequest,
+    CourseDto,
     CourseEntity,
     CourseSearchRequest,
     CreateCourseRequest,
     EnrollRequest,
     InscriptionDto,
-    PublicCourseDto,
     UpdateInscriptionRequest,
 } from 'src/domain';
-import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { Public } from 'src/public.decorator';
 import { CommentsService } from 'src/services/comments/comments.service';
 import { CoursesService } from 'src/services/courses/courses.service';
@@ -35,28 +34,26 @@ export class CoursesController {
 
     @Public()
     @Get()
-    async getPublished(): Promise<PublicCourseDto[]> {
+    async getPublished(): Promise<CourseDto[]> {
         return this.coursesService.getPublished();
     }
 
     @Post()
     @HttpCode(201)
-    create(@Body() course: CreateCourseRequest): Promise<CompleteCourseDto> {
+    create(@Body() course: CreateCourseRequest): Promise<CourseDto> {
         return this.coursesService.create(course);
     }
 
     @Public()
     @Post('search')
     @HttpCode(200)
-    search(
-        @Body() searchRequest: CourseSearchRequest,
-    ): Promise<PublicCourseDto[]> {
+    search(@Body() searchRequest: CourseSearchRequest): Promise<CourseDto[]> {
         return this.coursesService.search(searchRequest);
     }
 
     @Public()
     @Get(':id')
-    async getById(@Param('id') id: string): Promise<CompleteCourseDto> {
+    async getById(@Param('id') id: string): Promise<CourseDto> {
         return this.coursesService.getById(id);
     }
 
@@ -65,7 +62,7 @@ export class CoursesController {
     update(
         @Param('id') id: string,
         @Body() course: CourseEntity,
-    ): Promise<CompleteCourseDto> {
+    ): Promise<CourseDto> {
         return this.coursesService.update(id, course);
     }
 
@@ -80,7 +77,7 @@ export class CoursesController {
     enroll(
         @Param('id') id: string,
         @Body() enrollRequest: EnrollRequest,
-    ): Promise<PublicCourseDto> {
+    ): Promise<CourseDto> {
         return this.coursesService.enroll(id, enrollRequest);
     }
 
@@ -139,6 +136,6 @@ export class CoursesController {
         @Param('commentId') commentId: string,
         @Body() updateRequest: CommentRequest,
     ): Promise<CommentDto> {
-        return this.commentsService.update(id, commentId, updateRequest);
+        return this.commentsService.update(commentId, id, updateRequest);
     }
 }

@@ -5,9 +5,8 @@ import {
     CourseEntity,
     CreateCourseRequest,
     InscriptionDto,
-    PublicCourseDto,
 } from 'src/domain';
-import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
+import { CourseDto } from 'src/domain/dtos/course.dto';
 import { CommentsFactoryService } from '../comments/comments.factory.service';
 import { InscriptionsFactoryService } from '../inscriptions/inscriptions.factory.service';
 import { TeachersFactoryService } from '../teacher/teachers-factory.service';
@@ -20,8 +19,8 @@ export class CoursesFactoryService {
         private teachersFactoryService: TeachersFactoryService,
     ) {}
 
-    async toPublicDto(entity: CourseEntity): Promise<PublicCourseDto> {
-        const dto = new PublicCourseDto();
+    async toDto(entity: CourseEntity, published: boolean): Promise<CourseDto> {
+        const dto = new CourseDto();
         dto.id = entity.id;
         dto.name = entity.name;
         dto.subject = entity.subject;
@@ -34,33 +33,15 @@ export class CoursesFactoryService {
         dto.teacher = this.teachersFactoryService.toBasicDto(
             await entity.teacher,
         );
-        if (!entity.comments === undefined) {
-            dto.comments = await this.getComments(entity);
-        }
-        dto.imgSrc = entity.imgSrc;
-        return dto;
-    }
-
-    async toCompleteDto(entity: CourseEntity): Promise<CompleteCourseDto> {
-        const dto = new CompleteCourseDto();
-        dto.id = entity.id;
-        dto.name = entity.name;
-        dto.subject = entity.subject;
-        dto.duration = entity.duration;
-        dto.frequency = entity.frequency;
-        dto.price = entity.price;
-        dto.description = entity.description;
-        dto.rating = entity.rating;
-        dto.type = entity.type;
-        dto.teacher = this.teachersFactoryService.toBasicDto(
-            await entity.teacher,
-        );
-        if (!entity.comments === undefined) {
-            dto.comments = await this.getComments(entity);
+        if (entity.comments !== undefined) {
+            dto.comments = published
+                ? await this.getPublicComments(entity)
+                : await this.getComments(entity);
         }
         dto.imgSrc = entity.imgSrc;
         dto.published = entity.published;
-        if (!entity.inscriptions === undefined) {
+
+        if (entity.inscriptions !== undefined) {
             dto.inscriptions = await this.getInscriptions(entity);
         }
         return dto;
@@ -81,9 +62,15 @@ export class CoursesFactoryService {
 
     private async getComments(entity: CourseEntity): Promise<CommentDto[]> {
         return Promise.all(
-            entity.comments
-                .filter((c) => c.status && c.status === CommentStatus.ACCEPTED)
-                .map((c) => this.commentsFactoryService.toDto(c)),
+            entity.comments.map((c) => this.commentsFactoryService.toDto(c)),
+        );
+    }
+
+    private async getPublicComments(
+        entity: CourseEntity,
+    ): Promise<CommentDto[]> {
+        return this.getComments(entity).then((c) =>
+            c.filter((c) => c.status && c.status === CommentStatus.ACCEPTED),
         );
     }
 

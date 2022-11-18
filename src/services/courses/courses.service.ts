@@ -2,14 +2,13 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     CommentRequest,
+    CourseDto,
     CourseEntity,
     CourseSearchRequest,
     CreateCourseRequest,
     EnrollRequest,
-    PublicCourseDto,
     TeacherEntity,
 } from 'src/domain';
-import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';
@@ -29,24 +28,22 @@ export class CoursesService {
         private coursesFactoryService: CoursesFactoryService,
     ) {}
 
-    async getAll(): Promise<CompleteCourseDto[]> {
+    async getAll(): Promise<CourseDto[]> {
         // TODO: check if we need this getAll without filtering by published
         const arr = await this.coursesRepository.find();
         return Promise.all(
-            arr.map((ac) => this.coursesFactoryService.toCompleteDto(ac)),
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, false)),
         );
     }
 
-    async getPublished(): Promise<PublicCourseDto[]> {
+    async getPublished(): Promise<CourseDto[]> {
         const arr = await this.coursesRepository.findBy({ published: true });
         return Promise.all(
-            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
         );
     }
 
-    async search(
-        searchRequest: CourseSearchRequest,
-    ): Promise<PublicCourseDto[]> {
+    async search(searchRequest: CourseSearchRequest): Promise<CourseDto[]> {
         const arr = await this.coursesRepository.findBy({
             name: searchRequest.name,
             subject: searchRequest.subject,
@@ -56,25 +53,25 @@ export class CoursesService {
             published: true,
         });
         return Promise.all(
-            arr.map((ac) => this.coursesFactoryService.toPublicDto(ac)),
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
         );
     }
 
-    async getById(id: string): Promise<CompleteCourseDto> {
+    async getById(id: string): Promise<CourseDto> {
         const entity = await this.coursesRepository.findOneByOrFail({ id: id });
-        return this.coursesFactoryService.toCompleteDto(entity);
+        return this.coursesFactoryService.toDto(entity, false);
     }
 
-    async getByTeacher(id: string): Promise<CompleteCourseDto[]> {
+    async getByTeacher(id: string): Promise<CourseDto[]> {
         const arr = await this.coursesRepository.findBy({
             teacher: { id: id },
         });
         return Promise.all(
-            arr.map((ac) => this.coursesFactoryService.toCompleteDto(ac)),
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, false)),
         );
     }
 
-    async create(request: CreateCourseRequest): Promise<CompleteCourseDto> {
+    async create(request: CreateCourseRequest): Promise<CourseDto> {
         const teacher = await this.teacherRepository.findOneByOrFail({
             id: request.teacherId,
         });
@@ -82,13 +79,10 @@ export class CoursesService {
         teacher.courses.push(curse);
 
         await this.teacherRepository.save(teacher);
-        return this.coursesFactoryService.toCompleteDto(curse);
+        return this.coursesFactoryService.toDto(curse, false);
     }
 
-    async update(
-        id: string,
-        updateRequest: CourseEntity,
-    ): Promise<CompleteCourseDto> {
+    async update(id: string, updateRequest: CourseEntity): Promise<CourseDto> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.name = updateRequest.name;
         course.subject = updateRequest.subject;
@@ -99,17 +93,14 @@ export class CoursesService {
         course.type = updateRequest.type;
         course.imgSrc = updateRequest.imgSrc;
         const entity = await this.coursesRepository.save(course);
-        return this.coursesFactoryService.toCompleteDto(entity);
+        return this.coursesFactoryService.toDto(entity, false);
     }
 
     async delete(id: string): Promise<void> {
         await this.coursesRepository.delete({ id: id });
     }
 
-    async enroll(
-        id: string,
-        enrollRequest: EnrollRequest,
-    ): Promise<PublicCourseDto> {
+    async enroll(id: string, enrollRequest: EnrollRequest): Promise<CourseDto> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         if (!course.published) {
             throw new BadRequestException(
@@ -125,7 +116,7 @@ export class CoursesService {
         );
         course.inscriptions.push(inscription);
         const entity = await this.coursesRepository.save(course);
-        return this.coursesFactoryService.toPublicDto(entity);
+        return this.coursesFactoryService.toDto(entity, true);
     }
 
     async addComment(
