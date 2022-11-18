@@ -1,44 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TeacherEntity } from 'src/domain';
+import { TeacherDto, TeacherEntity } from 'src/domain';
 import { Repository } from 'typeorm';
+import { TeachersFactoryService } from './teachers-factory.service';
 
 @Injectable()
 export class TeachersService {
     constructor(
         @InjectRepository(TeacherEntity)
         private teachersRepository: Repository<TeacherEntity>,
+        private teachersFactoryService: TeachersFactoryService,
     ) {}
 
-    async getAll(): Promise<TeacherEntity[]> {
-        return await this.teachersRepository.find();
+    async getAll(): Promise<TeacherDto[]> {
+        const arr = await this.teachersRepository.find();
+        return Promise.all(
+            arr.map((t) => this.teachersFactoryService.toDto(t)),
+        );
     }
 
-    getById(id: string): Promise<TeacherEntity> {
-        return this.teachersRepository.findOneBy({ id: id });
+    async getById(id: string): Promise<TeacherDto> {
+        const entity = await this.teachersRepository.findOneBy({ id: id });
+        return this.teachersFactoryService.toDto(entity);
     }
 
     getByEmail(email: string): Promise<TeacherEntity> {
         return this.teachersRepository.findOneBy({ email: email });
     }
 
-    create(teacher: TeacherEntity): Promise<TeacherEntity> {
-        try {
-            const newTeacher = this.teachersRepository.create(teacher);
-            return this.teachersRepository.save(newTeacher);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
+    async create(teacher: TeacherEntity): Promise<TeacherDto> {
+        const newTeacher = await this.teachersRepository.save(teacher);
+        return this.teachersFactoryService.toDto(newTeacher);
     }
 
-    update(id: string, teacher: TeacherEntity): Promise<TeacherEntity> {
-        teacher.id = id;
-        return this.teachersRepository.save(teacher);
+    async update(id: string, teacher: TeacherDto): Promise<void> {
+        const entity = await this.teachersRepository.findOneBy({ id: id });
+        entity.firstname = teacher.name;
+        entity.lastname = teacher.lastname;
+        entity.title = teacher.title;
+        entity.experience = teacher.experience;
+        entity.phone = teacher.phone;
+        entity.email = teacher.email;
+
+        await this.teachersRepository.save(teacher);
     }
 
-    async delete(id: string): Promise<TeacherEntity> {
-        const teacher = await this.getById(id);
-        return teacher ? this.teachersRepository.remove(teacher) : null; //TODO: check this
+    async delete(id: string): Promise<void> {
+        await this.teachersRepository.delete({ id: id });
     }
 }

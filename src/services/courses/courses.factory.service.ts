@@ -30,9 +30,7 @@ export class CoursesFactoryService {
         dto.description = entity.description;
         dto.rating = entity.rating;
         dto.type = entity.type;
-        dto.teacher = this.teachersFactoryService.toBasicDto(
-            await entity.teacher,
-        );
+        dto.teacher = this.teachersFactoryService.toDto(await entity.teacher);
         if (entity.comments !== undefined) {
             dto.comments = published
                 ? await this.getPublicComments(entity)

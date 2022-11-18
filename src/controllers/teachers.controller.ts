@@ -7,7 +7,7 @@ import {
     Param,
     Put,
 } from '@nestjs/common';
-import { CourseEntity, TeacherEntity } from 'src/domain';
+import { TeacherDto } from 'src/domain';
 import { Public } from 'src/public.decorator';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
@@ -16,34 +16,27 @@ export class TeachersController {
     constructor(private teachersService: TeachersService) {}
 
     @Get()
-    async getAll(): Promise<TeacherEntity[]> {
+    async getAll(): Promise<TeacherDto[]> {
         return this.teachersService.getAll();
     }
 
     @Public()
     @Get(':id')
-    async getById(@Param('id') id: string): Promise<TeacherEntity> {
+    async getById(@Param('id') id: string): Promise<TeacherDto> {
         return this.teachersService.getById(id);
     }
 
     @Put(':id')
     update(
         @Param('id') id: string,
-        @Body() teacher: TeacherEntity,
-    ): Promise<TeacherEntity> {
+        @Body() teacher: TeacherDto,
+    ): Promise<void> {
         return this.teachersService.update(id, teacher);
     }
 
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id: string): Promise<TeacherEntity> {
+    delete(@Param('id') id: string): Promise<void> {
         return this.teachersService.delete(id);
-    }
-
-    @Public()
-    @Get(':id/courses')
-    async getCourses(@Param('id') id: string): Promise<CourseEntity[]> {
-        const teacher = await this.teachersService.getById(id);
-        return teacher.courses;
     }
 }

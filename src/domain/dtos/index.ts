@@ -1,4 +1,4 @@
-export * from './basic.teacher.dto';
+export * from './teacher.dto';
 export * from './comment.dto';
 export * from './course.dto';
 export * from './inscription.dto';
