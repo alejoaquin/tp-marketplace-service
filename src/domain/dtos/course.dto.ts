@@ -1,6 +1,5 @@
-import { TeacherDto, InscriptionDto } from '..';
+import { CommentDto, InscriptionDto, TeacherDto } from '..';
 import { CourseFrequency, CourseType } from '../enums';
-import { CommentDto } from './comment.dto';
 
 export class CourseDto {
     id: string;
