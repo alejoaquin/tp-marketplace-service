@@ -55,10 +55,14 @@ export class CoursesFactoryService {
         dto.teacher = this.usersFactoryService.userToBasicDto(
             await entity.teacher,
         );
-        dto.comments = await this.getComments(entity);
+        if (!entity.comments === undefined) {
+            dto.comments = await this.getComments(entity);
+        }
         dto.imgSrc = entity.imgSrc;
         dto.published = entity.published;
-        dto.inscriptions = await this.getInscriptions(entity);
+        if (!entity.inscriptions === undefined) {
+            dto.inscriptions = await this.getInscriptions(entity);
+        }
         return dto;
     }
 

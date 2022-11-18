@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
     CommentRequest,
@@ -7,6 +7,7 @@ import {
     CreateCourseRequest,
     EnrollRequest,
     PublicCourseDto,
+    TeacherEntity,
 } from 'src/domain';
 import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { Repository } from 'typeorm';
@@ -20,6 +21,8 @@ export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
+        @InjectRepository(TeacherEntity)
+        private teacherRepository: Repository<TeacherEntity>,
         private studentService: StudentsService,
         private commentsService: CommentsService,
         private inscriptionsService: InscriptionsService,
@@ -62,9 +65,15 @@ export class CoursesService {
         return this.coursesFactoryService.toCompleteDto(entity);
     }
 
-    async create(course: CreateCourseRequest): Promise<CompleteCourseDto> {
-        const entity = await this.coursesRepository.save(course); // TODO: fix this
-        return this.coursesFactoryService.toCompleteDto(entity);
+    async create(request: CreateCourseRequest): Promise<CompleteCourseDto> {
+        const teacher = await this.teacherRepository.findOneByOrFail({
+            id: request.teacherId,
+        });
+        const curse = this.coursesFactoryService.requestToEntity(request);
+        teacher.courses.push(curse);
+
+        await this.teacherRepository.save(teacher);
+        return this.coursesFactoryService.toCompleteDto(curse);
     }
 
     async update(
@@ -94,6 +103,11 @@ export class CoursesService {
         enrollRequest: EnrollRequest,
     ): Promise<PublicCourseDto> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
+        if (!course.published) {
+            throw new BadRequestException(
+                'No se puede inscribir a un curso no publicado',
+            );
+        }
         const student = await this.studentService.getById(
             enrollRequest.studentId,
         );
@@ -101,7 +115,6 @@ export class CoursesService {
             enrollRequest,
             student,
         );
-
         course.inscriptions.push(inscription);
         const entity = await this.coursesRepository.save(course);
         return this.coursesFactoryService.toPublicDto(entity);

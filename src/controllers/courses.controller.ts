@@ -104,8 +104,8 @@ export class CoursesController {
         @Body() updateRequest: UpdateInscriptionRequest,
     ): Promise<InscriptionDto> {
         return this.inscriptionsService.update(
-            id,
             inscriptionId,
+            id,
             updateRequest,
         );
     }
