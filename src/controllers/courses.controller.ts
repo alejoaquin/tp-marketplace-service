@@ -19,9 +19,14 @@ import {
     UpdateInscriptionRequest,
 } from 'src/domain';
 import { Public } from 'src/public.decorator';
+import { CommentsFactoryService } from 'src/services/comments/comments.factory.service';
 import { CommentsService } from 'src/services/comments/comments.service';
+import { CoursesFactoryService } from 'src/services/courses/courses.factory.service';
 import { CoursesService } from 'src/services/courses/courses.service';
+import { InscriptionsFactoryService } from 'src/services/inscriptions/inscriptions.factory.service';
 import { InscriptionsService } from 'src/services/inscriptions/inscriptions.service';
+import { StudentsService } from 'src/services/students/students.service';
+import { TeachersService } from 'src/services/teacher/teachers.service';
 
 @Controller('courses')
 export class CoursesController {
@@ -29,40 +34,62 @@ export class CoursesController {
         private coursesService: CoursesService,
         private commentsService: CommentsService,
         private inscriptionsService: InscriptionsService,
+        private studentService: StudentsService,
+        private teacherService: TeachersService,
+        private inscriptionsFactoryService: InscriptionsFactoryService,
+        private commentsFactoryService: CommentsFactoryService,
+        private coursesFactoryService: CoursesFactoryService,
     ) {}
 
     @Public()
     @Get()
     async getPublished(): Promise<CourseDto[]> {
-        return this.coursesService.getPublished();
+        const arr = await this.coursesService.getPublished();
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
+        );
     }
 
     @Post()
     @HttpCode(201)
-    create(@Body() course: CourseRequest): Promise<CourseDto> {
-        return this.coursesService.create(course);
+    async create(@Body() course: CourseRequest): Promise<CourseDto> {
+        const entity = this.coursesFactoryService.requestToEntity(course);
+        entity.teacher = this.teacherService.getById(course.teacherId);
+
+        return this.coursesFactoryService.toDto(
+            await this.coursesService.create(entity),
+            false,
+        );
     }
 
     @Public()
     @Post('search')
     @HttpCode(200)
-    search(@Body() searchRequest: CourseSearchRequest): Promise<CourseDto[]> {
-        return this.coursesService.search(searchRequest);
+    async search(
+        @Body() searchRequest: CourseSearchRequest,
+    ): Promise<CourseDto[]> {
+        const arr = await this.coursesService.search(searchRequest);
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
+        );
     }
 
     @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<CourseDto> {
-        return this.coursesService.getById(id);
+        const entity = await this.coursesService.getById(id);
+        return this.coursesFactoryService.toDto(entity, false);
     }
 
     @Put(':id')
     @HttpCode(200)
-    update(
+    async update(
         @Param('id') id: string,
-        @Body() course: CourseRequest,
+        @Body() request: CourseRequest,
     ): Promise<void> {
-        return this.coursesService.update(id, course);
+        const entity = this.coursesFactoryService.requestToEntity(request);
+        entity.id = id;
+        return this.coursesService.update(entity); // TODO: check if this works
     }
 
     @Delete(':id')
@@ -73,11 +100,17 @@ export class CoursesController {
 
     @Post(':id/inscriptions')
     @HttpCode(201)
-    enroll(
+    async enroll(
         @Param('id') id: string,
-        @Body() enrollRequest: EnrollRequest,
+        @Body() request: EnrollRequest,
     ): Promise<InscriptionDto> {
-        return this.coursesService.enroll(id, enrollRequest);
+        const entity = await this.inscriptionsFactoryService.enrollToEntity(
+            request,
+        );
+        entity.student = this.studentService.getById(request.studentId);
+        return this.inscriptionsFactoryService.toDto(
+            await this.coursesService.enroll(id, entity),
+        );
     }
 
     @Get(':id/inscriptions')
@@ -108,33 +141,48 @@ export class CoursesController {
 
     @Post(':id/comments')
     @HttpCode(201)
-    comment(
+    async comment(
         @Param('id') id: string,
-        @Body() comment: CommentRequest,
+        @Body() request: CommentRequest,
     ): Promise<CommentDto> {
-        return this.coursesService.addComment(id, comment);
+        const entity = await this.commentsFactoryService.requestToEntity(
+            request,
+        );
+        entity.student = this.studentService.getById(request.studentId);
+        return this.commentsFactoryService.toDto(
+            await this.coursesService.addComment(id, entity),
+        );
     }
 
     @Public()
     @Get(':id/comments')
-    getComments(@Param('id') id: string): Promise<CommentDto[]> {
-        return this.commentsService.getByCourse(id);
+    async getComments(@Param('id') id: string): Promise<CommentDto[]> {
+        const entities = await this.commentsService.getByCourse(id);
+        return Promise.all(
+            entities.map((entity) => this.commentsFactoryService.toDto(entity)),
+        );
     }
 
     @Get(':id/comments/:commentId')
-    getComment(
+    async getComment(
         @Param('id') id: string,
         @Param('commentId') commentId: string,
     ): Promise<CommentDto> {
-        return this.commentsService.getByIdAndCourse(commentId, id);
+        return this.commentsFactoryService.toDto(
+            await this.commentsService.getByIdAndCourse(commentId, id),
+        );
     }
 
     @Put(':id/comments/:commentId')
-    updateComment(
+    async updateComment(
         @Param('id') id: string,
         @Param('commentId') commentId: string,
         @Body() updateRequest: CommentRequest,
-    ): Promise<CommentDto> {
-        return this.commentsService.update(commentId, id, updateRequest);
+    ): Promise<void> {
+        return this.commentsService.update(
+            commentId,
+            id,
+            await this.commentsFactoryService.requestToEntity(updateRequest),
+        );
     }
 }
