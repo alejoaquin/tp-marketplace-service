@@ -12,9 +12,8 @@ import {
     CommentDto,
     CommentRequest,
     CourseDto,
-    CourseEntity,
+    CourseRequest,
     CourseSearchRequest,
-    CreateCourseRequest,
     EnrollRequest,
     InscriptionDto,
     UpdateInscriptionRequest,
@@ -40,7 +39,7 @@ export class CoursesController {
 
     @Post()
     @HttpCode(201)
-    create(@Body() course: CreateCourseRequest): Promise<CourseDto> {
+    create(@Body() course: CourseRequest): Promise<CourseDto> {
         return this.coursesService.create(course);
     }
 
@@ -61,7 +60,7 @@ export class CoursesController {
     @HttpCode(200)
     update(
         @Param('id') id: string,
-        @Body() course: CourseEntity,
+        @Body() course: CourseRequest,
     ): Promise<void> {
         return this.coursesService.update(id, course);
     }

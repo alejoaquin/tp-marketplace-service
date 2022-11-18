@@ -5,8 +5,8 @@ import {
     CommentRequest,
     CourseDto,
     CourseEntity,
+    CourseRequest,
     CourseSearchRequest,
-    CreateCourseRequest,
     EnrollRequest,
     InscriptionDto,
     TeacherEntity,
@@ -77,7 +77,7 @@ export class CoursesService {
         );
     }
 
-    async create(request: CreateCourseRequest): Promise<CourseDto> {
+    async create(request: CourseRequest): Promise<CourseDto> {
         const teacher = await this.teacherRepository.findOneByOrFail({
             id: request.teacherId,
         });
@@ -88,7 +88,7 @@ export class CoursesService {
         return this.coursesFactoryService.toDto(curse, false);
     }
 
-    async update(id: string, updateRequest: CourseEntity): Promise<void> {
+    async update(id: string, updateRequest: CourseRequest): Promise<void> {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.name = updateRequest.name;
         course.subject = updateRequest.subject;

@@ -3,7 +3,7 @@ import {
     CommentDto,
     CommentStatus,
     CourseEntity,
-    CreateCourseRequest,
+    CourseRequest,
     InscriptionDto,
 } from 'src/domain';
 import { CourseDto } from 'src/domain/dtos/course.dto';
@@ -47,7 +47,7 @@ export class CoursesFactoryService {
         return dto;
     }
 
-    requestToEntity(request: CreateCourseRequest): CourseEntity {
+    requestToEntity(request: CourseRequest): CourseEntity {
         const entity = new CourseEntity();
         entity.name = request.name;
         entity.subject = request.subject;
