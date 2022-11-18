@@ -7,43 +7,47 @@ import {
     Param,
     Put,
 } from '@nestjs/common';
-import { CourseEntity, TeacherEntity } from 'src/domain';
+import { TeacherDto } from 'src/domain';
 import { Public } from 'src/public.decorator';
+import { TeachersFactoryService } from 'src/services/teacher/teachers-factory.service';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
 @Controller('teachers')
 export class TeachersController {
-    constructor(private teachersService: TeachersService) {}
+    constructor(
+        private teachersService: TeachersService,
+        private teachersFactoryService: TeachersFactoryService,
+    ) {}
 
     @Get()
-    async getAll(): Promise<TeacherEntity[]> {
-        return this.teachersService.getAll();
+    async getAll(): Promise<TeacherDto[]> {
+        const arr = await this.teachersService.getAll();
+        return Promise.all(
+            arr.map((t) => this.teachersFactoryService.toDto(t)),
+        );
     }
 
     @Public()
     @Get(':id')
-    async getById(@Param('id') id: string): Promise<TeacherEntity> {
-        return this.teachersService.getById(id);
+    async getById(@Param('id') id: string): Promise<TeacherDto> {
+        const entity = await this.teachersService.getById(id);
+        return this.teachersFactoryService.toDto(entity);
     }
 
     @Put(':id')
     update(
         @Param('id') id: string,
-        @Body() teacher: TeacherEntity,
-    ): Promise<TeacherEntity> {
-        return this.teachersService.update(id, teacher);
+        @Body() teacher: TeacherDto,
+    ): Promise<void> {
+        return this.teachersService.update(
+            id,
+            this.teachersFactoryService.toEntity(teacher),
+        );
     }
 
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id: string): Promise<TeacherEntity> {
+    delete(@Param('id') id: string): Promise<void> {
         return this.teachersService.delete(id);
-    }
-
-    @Public()
-    @Get(':id/courses')
-    async getCourses(@Param('id') id: string): Promise<CourseEntity[]> {
-        const teacher = await this.teachersService.getById(id);
-        return teacher.courses;
     }
 }

@@ -10,8 +10,8 @@ export class TeachersService {
         private teachersRepository: Repository<TeacherEntity>,
     ) {}
 
-    async getAll(): Promise<TeacherEntity[]> {
-        return await this.teachersRepository.find();
+    getAll(): Promise<TeacherEntity[]> {
+        return this.teachersRepository.find();
     }
 
     getById(id: string): Promise<TeacherEntity> {
@@ -23,22 +23,22 @@ export class TeachersService {
     }
 
     create(teacher: TeacherEntity): Promise<TeacherEntity> {
-        try {
-            const newTeacher = this.teachersRepository.create(teacher);
-            return this.teachersRepository.save(newTeacher);
-        } catch (err) {
-            //TODO: handle error
-            throw err;
-        }
-    }
-
-    update(id: string, teacher: TeacherEntity): Promise<TeacherEntity> {
-        teacher.id = id;
         return this.teachersRepository.save(teacher);
     }
 
-    async delete(id: string): Promise<TeacherEntity> {
-        const teacher = await this.getById(id);
-        return teacher ? this.teachersRepository.remove(teacher) : null; //TODO: check this
+    async update(id: string, teacher: TeacherEntity): Promise<void> {
+        const entity = await this.teachersRepository.findOneBy({ id: id });
+        entity.firstname = teacher.firstname;
+        entity.lastname = teacher.lastname;
+        entity.title = teacher.title;
+        entity.experience = teacher.experience;
+        entity.phone = teacher.phone;
+        entity.email = teacher.email;
+
+        await this.teachersRepository.save(teacher);
+    }
+
+    async delete(id: string): Promise<void> {
+        await this.teachersRepository.delete({ id: id });
     }
 }

@@ -2,10 +2,12 @@ import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import {
     NotificationEntity,
     NotificationRequest,
+    UserDto,
     UserEntity,
 } from 'src/domain';
 import { Public } from 'src/public.decorator';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
+import { UsersFactoryService } from 'src/services/users/users-factory.service';
 import { UsersService } from 'src/services/users/users.service';
 
 @Controller('users')
@@ -13,23 +15,29 @@ export class UsersController {
     constructor(
         private usersService: UsersService,
         private notificationsService: NotificationsService,
+        private usersFactoryService: UsersFactoryService,
     ) {}
 
     @Get()
-    getAll(): Promise<UserEntity[]> {
-        return this.usersService.getAll();
+    async getAll(): Promise<UserDto[]> {
+        const arr = await this.usersService.getAll();
+        return Promise.all(arr.map((u) => this.usersFactoryService.toDto(u)));
     }
 
     @Get(':id')
-    getById(@Param('id') id: string): Promise<UserEntity> {
-        return this.usersService.getById(id);
+    async getById(@Param('id') id: string): Promise<UserDto> {
+        const entity = await this.usersService.getById(id);
+        return this.usersFactoryService.toDto(entity);
     }
 
     @Public()
     @Post()
     @HttpCode(201)
-    create(@Body() user: UserEntity): Promise<UserEntity> {
-        return this.usersService.create(user);
+    async create(@Body() user: UserEntity): Promise<UserDto> {
+        const entity = await this.usersService.create(
+            this.usersFactoryService.toEntity(user),
+        );
+        return this.usersFactoryService.toDto(entity);
     }
 
     @Get(':id/notifications')
