@@ -26,10 +26,7 @@ export class StudentsService {
         return this.studentsRepository.save(student);
     }
 
-    async update(
-        id: string,
-        updateRequest: StudentEntity,
-    ): Promise<StudentEntity> {
+    async update(id: string, updateRequest: StudentEntity): Promise<void> {
         const student = await this.getById(id);
         student.email;
         student.firstname = updateRequest.firstname;
@@ -37,11 +34,10 @@ export class StudentsService {
         student.phone = updateRequest.phone;
         student.birthday = updateRequest.birthday;
         student.educationalDegrees = updateRequest.educationalDegrees;
-        return this.studentsRepository.save(student);
+        await this.studentsRepository.save(student);
     }
 
-    async delete(id: string): Promise<StudentEntity> {
-        const student = await this.getById(id);
-        return this.studentsRepository.remove(student);
+    async delete(id: string): Promise<void> {
+        await this.studentsRepository.delete({ id: id });
     }
 }

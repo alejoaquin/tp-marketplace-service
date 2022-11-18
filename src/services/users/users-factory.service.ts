@@ -63,7 +63,7 @@ export class UsersFactoryService {
     toBasicDto(entity: UserEntity): UserBasicInfoDto {
         const dto = new UserBasicInfoDto();
         dto.id = entity.id;
-        dto.name = entity.firstname;
+        dto.firstname = entity.firstname;
         dto.lastname = entity.lastname;
         return dto;
     }

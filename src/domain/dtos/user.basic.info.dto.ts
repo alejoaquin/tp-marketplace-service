@@ -1,5 +1,5 @@
 export class UserBasicInfoDto {
     id: string;
-    name: string;
+    firstname: string;
     lastname: string;
 }
