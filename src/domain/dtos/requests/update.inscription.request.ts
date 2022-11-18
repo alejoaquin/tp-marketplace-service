@@ -1,4 +1,4 @@
-import { InscriptionStatus } from '../enums';
+import { InscriptionStatus } from 'src/domain/enums';
 
 export class UpdateInscriptionRequest {
     phone: number;

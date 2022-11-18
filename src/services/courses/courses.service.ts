@@ -1,55 +1,89 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-    CommentEntity,
     CommentRequest,
+    CourseDto,
     CourseEntity,
     CourseSearchRequest,
-    InscriptionEntity,
+    CreateCourseRequest,
+    EnrollRequest,
+    TeacherEntity,
 } from 'src/domain';
-import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
 import { CommentsService } from '../comments/comments.service';
 import { InscriptionsService } from '../inscriptions/inscriptions.service';
 import { StudentsService } from '../students/students.service';
+import { CoursesFactoryService } from './courses.factory.service';
 
 @Injectable()
 export class CoursesService {
     constructor(
         @InjectRepository(CourseEntity)
         private coursesRepository: Repository<CourseEntity>,
+        @InjectRepository(TeacherEntity)
+        private teacherRepository: Repository<TeacherEntity>,
         private studentService: StudentsService,
         private commentsService: CommentsService,
         private inscriptionsService: InscriptionsService,
+        private coursesFactoryService: CoursesFactoryService,
     ) {}
 
-    getAll(): Promise<CourseEntity[]> {
-        return this.coursesRepository.find();
+    async getAll(): Promise<CourseDto[]> {
+        // TODO: check if we need this getAll without filtering by published
+        const arr = await this.coursesRepository.find();
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, false)),
+        );
     }
 
-    async search(searchRequest: CourseSearchRequest): Promise<CourseEntity[]> {
-        return this.coursesRepository.findBy({
+    async getPublished(): Promise<CourseDto[]> {
+        const arr = await this.coursesRepository.findBy({ published: true });
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
+        );
+    }
+
+    async search(searchRequest: CourseSearchRequest): Promise<CourseDto[]> {
+        const arr = await this.coursesRepository.findBy({
             name: searchRequest.name,
             subject: searchRequest.subject,
             frequency: searchRequest.frequency,
             rating: searchRequest.rating,
             type: searchRequest.type,
+            published: true,
         });
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, true)),
+        );
     }
 
-    getById(id: string): Promise<CourseEntity> {
-        return this.coursesRepository.findOneByOrFail({ id: id });
+    async getById(id: string): Promise<CourseDto> {
+        const entity = await this.coursesRepository.findOneByOrFail({ id: id });
+        return this.coursesFactoryService.toDto(entity, false);
     }
 
-    create(course: CourseEntity): Promise<CourseEntity> {
-        return this.coursesRepository.save(course);
+    async getByTeacher(id: string): Promise<CourseDto[]> {
+        const arr = await this.coursesRepository.findBy({
+            teacher: { id: id },
+        });
+        return Promise.all(
+            arr.map((ac) => this.coursesFactoryService.toDto(ac, false)),
+        );
     }
 
-    async update(
-        id: string,
-        updateRequest: CourseEntity,
-    ): Promise<CourseEntity> {
-        const course = await this.getById(id);
+    async create(request: CreateCourseRequest): Promise<CourseDto> {
+        const teacher = await this.teacherRepository.findOneByOrFail({
+            id: request.teacherId,
+        });
+        const curse = this.coursesFactoryService.requestToEntity(request);
+        teacher.courses.push(curse);
+
+        await this.teacherRepository.save(teacher);
+        return this.coursesFactoryService.toDto(curse, false);
+    }
+
+    async update(id: string, updateRequest: CourseEntity): Promise<CourseDto> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.name = updateRequest.name;
         course.subject = updateRequest.subject;
         course.duration = updateRequest.duration;
@@ -58,19 +92,21 @@ export class CoursesService {
         course.description = updateRequest.description;
         course.type = updateRequest.type;
         course.imgSrc = updateRequest.imgSrc;
-        return this.coursesRepository.save(course);
+        const entity = await this.coursesRepository.save(course);
+        return this.coursesFactoryService.toDto(entity, false);
     }
 
-    async delete(id: string): Promise<CourseEntity> {
-        const course = await this.getById(id);
-        return this.coursesRepository.remove(course);
+    async delete(id: string): Promise<void> {
+        await this.coursesRepository.delete({ id: id });
     }
 
-    async enroll(
-        id: string,
-        enrollRequest: EnrollRequest,
-    ): Promise<CourseEntity> {
-        const course = await this.getById(id);
+    async enroll(id: string, enrollRequest: EnrollRequest): Promise<CourseDto> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
+        if (!course.published) {
+            throw new BadRequestException(
+                'No se puede inscribir a un curso no publicado',
+            );
+        }
         const student = await this.studentService.getById(
             enrollRequest.studentId,
         );
@@ -78,43 +114,21 @@ export class CoursesService {
             enrollRequest,
             student,
         );
-
         course.inscriptions.push(inscription);
-        return this.coursesRepository.save(course);
-    }
-
-    async getInscriptions(id: string): Promise<InscriptionEntity[]> {
-        const course = await this.getById(id);
-        return course.inscriptions;
-    }
-
-    async getInscriptionById(
-        id: string,
-        inscriptionId: string,
-    ): Promise<InscriptionEntity> {
-        const inscriptions = await this.getInscriptions(id).then((arr) =>
-            arr.filter((i) => i.id === inscriptionId),
-        );
-        if (inscriptions == null || inscriptions.length < 1)
-            throw new NotFoundException();
-        return inscriptions.pop();
+        const entity = await this.coursesRepository.save(course);
+        return this.coursesFactoryService.toDto(entity, true);
     }
 
     async addComment(
         id: string,
         commentRequest: CommentRequest,
     ): Promise<CourseEntity> {
-        const course = await this.getById(id);
-        const student = await this.studentService.getById(
-            commentRequest.studentId,
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
+        const comment = this.commentsService.create(
+            commentRequest,
+            this.studentService.getById(commentRequest.studentId),
         );
-        const comment = this.commentsService.create(commentRequest, student);
         course.comments.push(comment);
         return this.coursesRepository.save(course);
-    }
-
-    async getComments(id: string): Promise<CommentEntity[]> {
-        const course = await this.getById(id);
-        return course.comments;
     }
 }

@@ -23,8 +23,10 @@ export class InscriptionEntity {
     @Column()
     timeRangeTo: string;
 
-    @ManyToOne(() => StudentEntity, (student) => student.inscriptions)
-    student: StudentEntity;
+    @ManyToOne(() => StudentEntity, (student) => student.inscriptions, {
+        onDelete: 'CASCADE',
+    })
+    student: Promise<StudentEntity>;
 
     @Column({
         type: 'enum',
@@ -33,6 +35,8 @@ export class InscriptionEntity {
     })
     status: InscriptionStatus;
 
-    @ManyToOne(() => CourseEntity, (course) => course.inscriptions)
+    @ManyToOne(() => CourseEntity, (course) => course.inscriptions, {
+        onDelete: 'CASCADE',
+    })
     course: Promise<CourseEntity>;
 }

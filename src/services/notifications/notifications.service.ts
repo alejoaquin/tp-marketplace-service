@@ -36,7 +36,7 @@ export class NotificationsService {
             const teacher = await comment.course.then((c) => c.teacher);
             if (
                 request.source === NotificationSource.BLOCK &&
-                comment.student.id !== userId
+                (await comment.student).id !== userId
             ) {
                 throw new BadRequestException(); // TODO: check error message
             } else if (

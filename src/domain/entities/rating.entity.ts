@@ -10,9 +10,13 @@ export class RatingEntity {
     @Column()
     score: number;
 
-    @ManyToOne(() => StudentEntity, (student) => student.ratings)
+    @ManyToOne(() => StudentEntity, (student) => student.ratings, {
+        onDelete: 'CASCADE',
+    })
     student: StudentEntity;
 
-    @ManyToOne(() => CourseEntity, (course) => course.rating)
+    @ManyToOne(() => CourseEntity, (course) => course.rating, {
+        onDelete: 'CASCADE',
+    })
     course: CourseEntity;
 }

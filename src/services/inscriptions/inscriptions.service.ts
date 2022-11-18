@@ -1,18 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+    EnrollRequest,
+    InscriptionDto,
     InscriptionEntity,
     StudentEntity,
     UpdateInscriptionRequest,
 } from 'src/domain';
-import { EnrollRequest } from 'src/domain/dtos/enroll.request';
 import { Repository } from 'typeorm';
+import { InscriptionsFactoryService } from './inscriptions.factory.service';
 
 @Injectable()
 export class InscriptionsService {
     constructor(
         @InjectRepository(InscriptionEntity)
         private inscriptionRepository: Repository<InscriptionEntity>,
+        private inscriptionsFactoryService: InscriptionsFactoryService,
     ) {}
 
     create(
@@ -25,24 +28,50 @@ export class InscriptionsService {
         inscription.reason = enrollRequest.reason;
         inscription.timeRangeFrom = enrollRequest.timeRangeFrom;
         inscription.timeRangeTo = enrollRequest.timeRangeTo;
-        inscription.student = student;
+        inscription.student = Promise.resolve(student);
         return inscription;
     }
 
-    get(id: string): Promise<InscriptionEntity> {
-        return this.inscriptionRepository.findOneByOrFail({ id: id });
+    async get(id: string): Promise<InscriptionDto> {
+        const entity = await this.inscriptionRepository.findOneByOrFail({
+            id: id,
+        });
+        return this.inscriptionsFactoryService.toDto(entity);
+    }
+
+    async getByCourse(courseId: string): Promise<InscriptionDto[]> {
+        const entities = await this.inscriptionRepository.findBy({
+            course: { id: courseId },
+        });
+
+        return Promise.all(
+            entities.map((entity) =>
+                this.inscriptionsFactoryService.toDto(entity),
+            ),
+        );
+    }
+
+    async getByIdAndCourse(
+        id: string,
+        courseId: string,
+    ): Promise<InscriptionDto> {
+        const entity = await this.inscriptionRepository.findOneByOrFail({
+            id: id,
+            course: { id: courseId },
+        });
+        return this.inscriptionsFactoryService.toDto(entity);
     }
 
     async update(
+        id: string,
         courseId: string,
-        inscriptionId: string,
         updateRequest: UpdateInscriptionRequest,
-    ): Promise<InscriptionEntity> {
-        const inscription = await this.get(inscriptionId);
-        const course = await inscription.course;
-        if (course.id != courseId) {
-            throw new BadRequestException(); // TODO: check error message
-        }
+    ): Promise<InscriptionDto> {
+        const inscription = await this.inscriptionRepository.findOneByOrFail({
+            id: id,
+            course: { id: courseId },
+        });
+
         inscription.phone = updateRequest.phone;
         inscription.email = updateRequest.email;
         inscription.reason = updateRequest.reason;
@@ -54,6 +83,11 @@ export class InscriptionsService {
             inscription.status = updateRequest.status;
         }
 
-        return this.inscriptionRepository.save(inscription);
+        return this.save(inscription);
+    }
+
+    private async save(entity: InscriptionEntity): Promise<InscriptionDto> {
+        const inscription = await this.inscriptionRepository.save(entity);
+        return this.inscriptionsFactoryService.toDto(inscription);
     }
 }
