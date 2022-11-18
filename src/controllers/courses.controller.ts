@@ -71,7 +71,7 @@ export class CoursesController {
 
     @Delete(':id')
     @HttpCode(204)
-    delete(@Param('id') id: string): Promise<CompleteCourseDto> {
+    delete(@Param('id') id: string): Promise<void> {
         return this.coursesService.delete(id);
     }
 

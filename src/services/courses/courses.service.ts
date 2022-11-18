@@ -93,9 +93,8 @@ export class CoursesService {
         return this.coursesFactoryService.toCompleteDto(entity);
     }
 
-    async delete(id: string): Promise<CompleteCourseDto> {
-        const response = await this.coursesRepository.delete({ id: id });
-        return this.coursesFactoryService.toCompleteDto(response.raw);
+    async delete(id: string): Promise<void> {
+        await this.coursesRepository.delete({ id: id });
     }
 
     async enroll(
