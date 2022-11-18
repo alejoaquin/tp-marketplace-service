@@ -11,12 +11,10 @@ import { CompleteCourseDto } from 'src/domain/dtos/complete.course.dto';
 import { CommentsFactoryService } from '../comments/comments.factory.service';
 import { InscriptionsFactoryService } from '../inscriptions/inscriptions.factory.service';
 import { TeachersFactoryService } from '../teacher/teachers-factory.service';
-import { UsersFactoryService } from '../users/users-factory.service';
 
 @Injectable()
 export class CoursesFactoryService {
     constructor(
-        private usersFactoryService: UsersFactoryService,
         private commentsFactoryService: CommentsFactoryService,
         private inscriptionsFactoryService: InscriptionsFactoryService,
         private teachersFactoryService: TeachersFactoryService,
@@ -36,7 +34,9 @@ export class CoursesFactoryService {
         dto.teacher = this.teachersFactoryService.toBasicDto(
             await entity.teacher,
         );
-        dto.comments = await this.getComments(entity);
+        if (!entity.comments === undefined) {
+            dto.comments = await this.getComments(entity);
+        }
         dto.imgSrc = entity.imgSrc;
         return dto;
     }
@@ -52,7 +52,7 @@ export class CoursesFactoryService {
         dto.description = entity.description;
         dto.rating = entity.rating;
         dto.type = entity.type;
-        dto.teacher = this.usersFactoryService.userToBasicDto(
+        dto.teacher = this.teachersFactoryService.toBasicDto(
             await entity.teacher,
         );
         if (!entity.comments === undefined) {

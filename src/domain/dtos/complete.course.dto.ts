@@ -1,7 +1,6 @@
-import { InscriptionDto, RatingDto } from '..';
+import { BasicTeacherDto, InscriptionDto } from '..';
 import { CourseFrequency, CourseType } from '../enums';
 import { CommentDto } from './comment.dto';
-import { UserBasicInfoDto } from './user.basic.info.dto';
 
 export class CompleteCourseDto {
     id: string;
@@ -13,7 +12,7 @@ export class CompleteCourseDto {
     description: string;
     rating: number;
     type: CourseType;
-    teacher: UserBasicInfoDto;
+    teacher: BasicTeacherDto;
     comments: CommentDto[];
     published: boolean;
     imgSrc: string;
