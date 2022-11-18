@@ -207,6 +207,20 @@ export class CoursesController {
         );
     }
 
+    @Post(':id/ratings')
+    @HttpCode(201)
+    async rating(
+        @Param('id') id: string,
+        @Body() request: RatingDto,
+    ): Promise<RatingDto> {
+        const entity = await this.ratingsFactoryService.toEntity(request);
+        entity.student = this.studentService.getById(request.student.id);
+
+        return this.ratingsFactoryService.toDto(
+            await this.coursesService.addRating(id, entity),
+        );
+    }
+
     @Public()
     @Get(':id/ratings')
     async getRatings(@Param('id') id: string): Promise<RatingDto[]> {

@@ -13,7 +13,7 @@ export class RatingEntity {
     @ManyToOne(() => StudentEntity, (student) => student.ratings, {
         onDelete: 'CASCADE',
     })
-    student: StudentEntity;
+    student: Promise<StudentEntity>;
 
     @ManyToOne(() => CourseEntity, (course) => course.rating, {
         onDelete: 'CASCADE',
