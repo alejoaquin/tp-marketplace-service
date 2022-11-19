@@ -56,7 +56,7 @@ export class NotificationsService {
             description: inscription.reason,
             userId: teacher.id,
             objectId: inscription.id,
-            source: NotificationSource.COMMENT,
+            source: NotificationSource.INSCRIPTION,
             courseId: (await inscription.course).id,
         });
 
