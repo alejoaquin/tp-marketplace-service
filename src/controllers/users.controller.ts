@@ -1,10 +1,5 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import {
-    NotificationDto,
-    NotificationRequest,
-    UserDto,
-    UserEntity,
-} from 'src/domain';
+import { NotificationDto, UserDto, UserEntity } from 'src/domain';
 import { Public } from 'src/public.decorator';
 import { NotificationsFactoryService } from 'src/services/notifications/notifications-factory.service';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
@@ -50,16 +45,6 @@ export class UsersController {
         return Promise.all(
             arr.map((n) => this.notificationsFactoryService.toDto(n)),
         );
-    }
-
-    @Post(':id/notifications')
-    @HttpCode(201)
-    async createNotification(
-        @Param('id') id: string,
-        @Body() notification: NotificationRequest,
-    ): Promise<NotificationDto> {
-        const entity = await this.notificationsService.create(id, notification);
-        return this.notificationsFactoryService.toDto(entity);
     }
 
     @Post(':id/notifications/:notificationId')
