@@ -52,16 +52,6 @@ export class UsersController {
         );
     }
 
-    @Post(':id/notifications')
-    @HttpCode(201)
-    async createNotification(
-        @Param('id') id: string,
-        @Body() notification: NotificationRequest,
-    ): Promise<NotificationDto> {
-        const entity = await this.notificationsService.create(id, notification);
-        return this.notificationsFactoryService.toDto(entity);
-    }
-
     @Post(':id/notifications/:notificationId')
     @HttpCode(200)
     async reedNotification(
