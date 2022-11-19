@@ -1,5 +1,5 @@
 export enum CommentStatus {
     PENDING = 'pendiente',
-    ACCEPTED = 'aceptada',
+    ACCEPTED = 'aceptado',
     BLOCKED = 'bloqueado',
 }
