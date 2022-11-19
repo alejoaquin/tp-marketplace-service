@@ -1,10 +1,5 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import {
-    NotificationDto,
-    NotificationRequest,
-    UserDto,
-    UserEntity,
-} from 'src/domain';
+import { NotificationDto, UserDto, UserEntity } from 'src/domain';
 import { Public } from 'src/public.decorator';
 import { NotificationsFactoryService } from 'src/services/notifications/notifications-factory.service';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
