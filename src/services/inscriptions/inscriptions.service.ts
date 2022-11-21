@@ -67,9 +67,14 @@ export class InscriptionsService {
         courseId: string,
         updateRequest: UpdateInscriptionRequest,
     ): Promise<InscriptionDto> {
-        const inscription = await this.inscriptionRepository.findOneByOrFail({
-            id: id,
-            course: { id: courseId },
+        const inscription = await this.inscriptionRepository.findOne({
+            relations: {
+                course: true,
+            },
+            where: {
+                id: id,
+                course: { id: courseId },
+            },
         });
 
         inscription.phone = updateRequest.phone;
@@ -79,7 +84,6 @@ export class InscriptionsService {
         inscription.timeRangeTo = updateRequest.timeRangeTo;
 
         if (inscription.status != updateRequest.status) {
-            // TODO: send notification
             inscription.status = updateRequest.status;
         }
 

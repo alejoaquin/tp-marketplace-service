@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { NotificationDto, NotificationEntity } from 'src/domain';
+import {
+    NotificationDto,
+    NotificationEntity,
+    UserBasicInfoDto,
+} from 'src/domain';
 
 @Injectable()
 export class NotificationsFactoryService {
@@ -13,6 +17,9 @@ export class NotificationsFactoryService {
         dto.seen = entity.seen;
         dto.source = entity.source;
         dto.courseId = entity.courseId;
+        const user = new UserBasicInfoDto();
+        user.id = entity.senderId;
+        dto.senderUser = user;
         return dto;
     }
 }

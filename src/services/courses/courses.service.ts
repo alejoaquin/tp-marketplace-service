@@ -9,6 +9,7 @@ import {
     TeacherEntity,
 } from 'src/domain';
 import { Repository } from 'typeorm';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class CoursesService {
@@ -17,6 +18,7 @@ export class CoursesService {
         private coursesRepository: Repository<CourseEntity>,
         @InjectRepository(TeacherEntity)
         private teacherRepository: Repository<TeacherEntity>,
+        private notificationsService: NotificationsService,
     ) {}
 
     getAll(): Promise<CourseEntity[]> {
@@ -91,7 +93,9 @@ export class CoursesService {
         }
         course.inscriptions.push(inscription);
         await this.coursesRepository.save(course);
-
+        await this.notificationsService.sentInscriptionNotification(
+            inscription,
+        );
         return inscription;
     }
 
@@ -102,6 +106,7 @@ export class CoursesService {
         const course = await this.coursesRepository.findOneByOrFail({ id: id });
         course.comments.push(comment);
         await this.coursesRepository.save(course);
+        await this.notificationsService.sentNewCommentNotification(comment);
         return comment;
     }
 

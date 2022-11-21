@@ -10,6 +10,7 @@ import { CommentsModule } from './services/comments/comments.module';
 import { CoursesModule } from './services/courses/courses.module';
 import { InscriptionsModule } from './services/inscriptions/inscriptions.module';
 import { RatingsModule } from './services/ratings/ratings.module';
+import { NotificationsModule } from './services/notifications/notifications.module';
 import { StudentsModule } from './services/students/students.module';
 import { TeachersModule } from './services/teacher/teachers.module';
 import { UsersModule } from './services/users/users.module';
@@ -39,6 +40,7 @@ import { UsersModule } from './services/users/users.module';
         }),
         StudentsModule,
         TeachersModule,
+        NotificationsModule,
         UsersModule,
         CoursesModule,
         CommentsModule,
