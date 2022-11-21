@@ -1,5 +1,10 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
-import { NotificationDto, UserDto, UserEntity } from 'src/domain';
+import {
+    NotificationDto,
+    NotificationEntity,
+    UserDto,
+    UserEntity,
+} from 'src/domain';
 import { Public } from 'src/public.decorator';
 import { NotificationsFactoryService } from 'src/services/notifications/notifications-factory.service';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
@@ -42,9 +47,7 @@ export class UsersController {
         @Param('id') id: string,
     ): Promise<NotificationDto[]> {
         const arr = await this.notificationsService.getAll(id);
-        return Promise.all(
-            arr.map((n) => this.notificationsFactoryService.toDto(n)),
-        );
+        return Promise.all(arr.map((n) => this.enrichNotification(n)));
     }
 
     @Post(':id/notifications/:notificationId')
@@ -53,6 +56,19 @@ export class UsersController {
         @Param('notificationId') id: string,
     ): Promise<NotificationDto> {
         const entity = await this.notificationsService.read(id);
-        return this.notificationsFactoryService.toDto(entity);
+        return this.enrichNotification(entity);
+    }
+
+    private async enrichNotification(
+        entity: NotificationEntity,
+    ): Promise<NotificationDto> {
+        const notification = await this.notificationsFactoryService.toDto(
+            entity,
+        );
+
+        notification.senderUser = await this.usersService.getById(
+            notification.senderUser.id,
+        );
+        return notification;
     }
 }

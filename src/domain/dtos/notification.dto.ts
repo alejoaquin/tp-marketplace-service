@@ -1,4 +1,5 @@
 import { NotificationSource } from '../enums';
+import { UserBasicInfoDto } from './user.basic.info.dto';
 
 export class NotificationDto {
     id: string;
@@ -7,4 +8,5 @@ export class NotificationDto {
     seen: boolean;
     source: NotificationSource;
     courseId: string;
+    senderUser: UserBasicInfoDto;
 }
