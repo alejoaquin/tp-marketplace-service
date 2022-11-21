@@ -21,6 +21,9 @@ export class NotificationEntity {
     @Column({ default: false })
     seen: boolean;
 
+    @Column()
+    senderId: string;
+
     @Column({
         type: 'enum',
         enum: NotificationSource,

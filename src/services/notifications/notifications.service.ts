@@ -22,12 +22,14 @@ export class NotificationsService {
     async sentBlockNotification(
         comment: CommentEntity,
     ): Promise<NotificationEntity> {
+        const course = await comment.course;
         const notification = this.notificationsRepository.create({
             description: comment.blockReason,
             userId: (await comment.student).id,
+            senderId: (await course.teacher).id,
             objectId: comment.id,
             source: NotificationSource.BLOCK,
-            courseId: (await comment.course).id,
+            courseId: course.id,
         });
 
         return this.notificationsRepository.save(notification);
@@ -43,6 +45,7 @@ export class NotificationsService {
             objectId: comment.id,
             source: NotificationSource.COMMENT,
             courseId: (await comment.course).id,
+            senderId: (await comment.student).id,
         });
 
         return this.notificationsRepository.save(notification);
@@ -58,6 +61,7 @@ export class NotificationsService {
             objectId: inscription.id,
             source: NotificationSource.INSCRIPTION,
             courseId: (await inscription.course).id,
+            senderId: (await inscription.student).id,
         });
 
         return this.notificationsRepository.save(notification);

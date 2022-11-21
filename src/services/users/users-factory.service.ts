@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
-    UserBasicInfoDto,
     StudentEntity,
     TeacherEntity,
+    UserBasicInfoDto,
     UserEntity,
 } from 'src/domain';
 import { UserDto } from 'src/domain/dtos/user.dto';
