@@ -27,17 +27,12 @@ export class RatingsService {
         });
     }
 
-    async update(
-        id: string,
-        courseId: string,
-        rating: RatingEntity,
-    ): Promise<void> {
+    async update(courseId: string, rating: RatingEntity): Promise<void> {
         const entity = await this.ratingRepository.findOneByOrFail({
-            id: id,
+            id: rating.id,
             course: { id: courseId },
         });
         entity.score = rating.score;
-
         await this.ratingRepository.save(entity);
     }
 }

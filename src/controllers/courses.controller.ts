@@ -243,11 +243,11 @@ export class CoursesController {
     @Put(':id/ratings/:ratingId')
     async updateRating(
         @Param('id') id: string,
-        @Param('ratingId') commentId: string,
+        @Param('ratingId') ratingId: string,
         @Body() rating: RatingDto,
     ): Promise<void> {
-        return this.ratingsService.update(
-            commentId,
+        rating.id = ratingId;
+        return this.coursesService.updatingRating(
             id,
             await this.ratingsFactoryService.toEntity(rating),
         );
