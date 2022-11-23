@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {
+    AuthenticatedUserDto,
+    CreateUserRequest,
     StudentEntity,
     TeacherEntity,
     UserBasicInfoDto,
@@ -66,5 +68,26 @@ export class UsersFactoryService {
         dto.firstname = entity.firstname;
         dto.lastname = entity.lastname;
         return dto;
+    }
+
+    toAuthenticatedUser(entity: UserEntity): AuthenticatedUserDto {
+        const dto = new AuthenticatedUserDto();
+        dto.id = entity.id;
+        dto.firstname = entity.firstname;
+        dto.lastname = entity.lastname;
+        return dto;
+    }
+
+    createRequestToEntity(request: CreateUserRequest): UserEntity {
+        const entity = new UserEntity(
+            null,
+            request.firstname,
+            request.lastname,
+            request.phone,
+            request.email,
+            request.password,
+            request.role,
+        );
+        return entity;
     }
 }

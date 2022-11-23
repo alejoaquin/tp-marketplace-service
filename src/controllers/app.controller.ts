@@ -1,16 +1,30 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { Public } from 'src/public.decorator';
+import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { AuthenticatedUserDto, CreateUserRequest, SignInDto } from 'src/domain';
+import { ForgotPasswordRequest } from 'src/domain/dtos/requests/forgot.password.request';
 import { AuthService } from 'src/services/auth/auth.service';
-import { LocalAuthGuard } from 'src/services/auth/local-auth.guard';
 
 @Controller()
 export class AppController {
-    constructor(private authService: AuthService) {}
+    constructor(private readonly authService: AuthService) {}
 
-    @Public()
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async login(@Request() req) {
-        return this.authService.login(req.user);
+    @Post('/signUp')
+    async signUp(
+        @Body(new ValidationPipe()) createUserDto: CreateUserRequest,
+    ): Promise<boolean> {
+        return this.authService.signUp(createUserDto);
+    }
+
+    @Post('/signIn')
+    async signIn(
+        @Body(new ValidationPipe()) signInDto: SignInDto,
+    ): Promise<AuthenticatedUserDto> {
+        return await this.authService.signIn(signInDto);
+    }
+
+    @Post('/forgotPassword')
+    async forgotPassword(
+        @Body(new ValidationPipe()) forgotPasswordDto: ForgotPasswordRequest,
+    ): Promise<void> {
+        return this.authService.forgotPassword(forgotPasswordDto);
     }
 }

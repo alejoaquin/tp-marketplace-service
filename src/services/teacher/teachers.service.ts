@@ -26,7 +26,7 @@ export class TeachersService {
         return this.teachersRepository.save(teacher);
     }
 
-    async update(id: string, teacher: TeacherEntity): Promise<void> {
+    async update(id: string, teacher: Partial<TeacherEntity>): Promise<void> {
         const entity = await this.teachersRepository.findOneBy({ id: id });
         entity.firstname = teacher.firstname;
         entity.lastname = teacher.lastname;

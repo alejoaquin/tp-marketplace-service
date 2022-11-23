@@ -22,11 +22,15 @@ export class StudentsService {
         return this.studentsRepository.findOneByOrFail({ email: email });
     }
 
-    create(student: StudentEntity): Promise<StudentEntity> {
-        return this.studentsRepository.save(student);
+    create(student: Partial<StudentEntity>): Promise<StudentEntity> {
+        const entity = this.studentsRepository.create(student);
+        return this.studentsRepository.save(entity);
     }
 
-    async update(id: string, updateRequest: StudentEntity): Promise<void> {
+    async update(
+        id: string,
+        updateRequest: Partial<StudentEntity>,
+    ): Promise<void> {
         const student = await this.getById(id);
         student.email;
         student.firstname = updateRequest.firstname;
