@@ -45,11 +45,12 @@ export class CommentsService {
         });
 
         comment.status = commentRequest.status;
-        comment.description = commentRequest.description;
 
         if (commentRequest.status === CommentStatus.BLOCKED) {
             comment.blockReason = commentRequest.description;
             await this.notificationsService.sentBlockNotification(comment);
+        } else {
+            comment.description = commentRequest.description;
         }
 
         await this.commentRepository.save(comment);

@@ -5,10 +5,12 @@ import {
     CourseEntity,
     CourseSearchRequest,
     InscriptionEntity,
+    RatingEntity,
     TeacherEntity,
 } from 'src/domain';
 import { Repository } from 'typeorm';
 import { NotificationsService } from '../notifications/notifications.service';
+import { RatingsService } from '../ratings/ratings.service';
 
 @Injectable()
 export class CoursesService {
@@ -18,6 +20,7 @@ export class CoursesService {
         @InjectRepository(TeacherEntity)
         private teacherRepository: Repository<TeacherEntity>,
         private notificationsService: NotificationsService,
+        private ratingsService: RatingsService,
     ) {}
 
     getAll(): Promise<CourseEntity[]> {
@@ -107,5 +110,29 @@ export class CoursesService {
         await this.coursesRepository.save(course);
         await this.notificationsService.sentNewCommentNotification(comment);
         return comment;
+    }
+
+    async addRating(id: string, rating: RatingEntity): Promise<RatingEntity> {
+        const course = await this.coursesRepository.findOneByOrFail({ id: id });
+        course.ratings.push(rating);
+        course.rating = this.calculateRating(course);
+        await this.coursesRepository.save(course);
+        return rating;
+    }
+
+    async updatingRating(id: string, rating: RatingEntity): Promise<void> {
+        await this.ratingsService.update(id, rating);
+        const course = await this.coursesRepository.findOneBy({ id: id });
+        course.rating = this.calculateRating(course);
+        await this.coursesRepository.save(course);
+    }
+
+    private calculateRating(course: CourseEntity): number {
+        return (
+            course.ratings
+                .map((r) => r.score)
+                .reduce((partialSum, a) => partialSum + a, 0) /
+            course.ratings.length
+        );
     }
 }

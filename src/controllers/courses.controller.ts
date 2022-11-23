@@ -16,6 +16,7 @@ import {
     CourseSearchRequest,
     EnrollRequest,
     InscriptionDto,
+    RatingDto,
     UpdateInscriptionRequest,
 } from 'src/domain';
 import { Public } from 'src/public.decorator';
@@ -25,6 +26,8 @@ import { CoursesFactoryService } from 'src/services/courses/courses.factory.serv
 import { CoursesService } from 'src/services/courses/courses.service';
 import { InscriptionsFactoryService } from 'src/services/inscriptions/inscriptions.factory.service';
 import { InscriptionsService } from 'src/services/inscriptions/inscriptions.service';
+import { RatingsFactoryService } from 'src/services/ratings/ratings-factory.service';
+import { RatingsService } from 'src/services/ratings/ratings.service';
 import { StudentsService } from 'src/services/students/students.service';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
@@ -36,9 +39,11 @@ export class CoursesController {
         private inscriptionsService: InscriptionsService,
         private studentService: StudentsService,
         private teacherService: TeachersService,
+        private ratingsService: RatingsService,
         private inscriptionsFactoryService: InscriptionsFactoryService,
         private commentsFactoryService: CommentsFactoryService,
         private coursesFactoryService: CoursesFactoryService,
+        private ratingsFactoryService: RatingsFactoryService,
     ) {}
 
     @Public()
@@ -199,6 +204,52 @@ export class CoursesController {
             commentId,
             id,
             await this.commentsFactoryService.requestToEntity(updateRequest),
+        );
+    }
+
+    @Post(':id/ratings')
+    @HttpCode(201)
+    async rating(
+        @Param('id') id: string,
+        @Body() request: RatingDto,
+    ): Promise<RatingDto> {
+        const entity = await this.ratingsFactoryService.toEntity(request);
+        entity.student = this.studentService.getById(request.student.id);
+
+        return this.ratingsFactoryService.toDto(
+            await this.coursesService.addRating(id, entity),
+        );
+    }
+
+    @Public()
+    @Get(':id/ratings')
+    async getRatings(@Param('id') id: string): Promise<RatingDto[]> {
+        const entities = await this.ratingsService.getByCourse(id);
+        return Promise.all(
+            entities.map((entity) => this.ratingsFactoryService.toDto(entity)),
+        );
+    }
+
+    @Get(':id/ratings/:ratingId')
+    async getRating(
+        @Param('id') id: string,
+        @Param('ratingId') commentId: string,
+    ): Promise<RatingDto> {
+        return this.ratingsFactoryService.toDto(
+            await this.ratingsService.getByIdAndCourse(commentId, id),
+        );
+    }
+
+    @Put(':id/ratings/:ratingId')
+    async updateRating(
+        @Param('id') id: string,
+        @Param('ratingId') ratingId: string,
+        @Body() rating: RatingDto,
+    ): Promise<void> {
+        rating.id = ratingId;
+        return this.coursesService.updatingRating(
+            id,
+            await this.ratingsFactoryService.toEntity(rating),
         );
     }
 }

@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './services/auth/jwt-auth.guard';
 import { CommentsModule } from './services/comments/comments.module';
 import { CoursesModule } from './services/courses/courses.module';
 import { InscriptionsModule } from './services/inscriptions/inscriptions.module';
+import { RatingsModule } from './services/ratings/ratings.module';
 import { NotificationsModule } from './services/notifications/notifications.module';
 import { StudentsModule } from './services/students/students.module';
 import { TeachersModule } from './services/teacher/teachers.module';
@@ -44,6 +45,7 @@ import { UsersModule } from './services/users/users.module';
         CoursesModule,
         CommentsModule,
         InscriptionsModule,
+        RatingsModule,
         AuthModule,
     ],
     controllers: [AppController],
