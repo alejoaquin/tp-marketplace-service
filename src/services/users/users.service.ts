@@ -41,17 +41,10 @@ export class UsersService {
               );
     }
 
-    update(user: UserEntity): Promise<void> {
-        user.password = this.hashPassword(user.password);
+    update(user: Partial<UserEntity>): Promise<void> {
         return user.role === Role.STUDENT_ROLE
-            ? this.studentsService.update(
-                  user.id,
-                  this.usersFactoryService.userToStudent(user),
-              )
-            : this.teachersService.update(
-                  user.id,
-                  this.usersFactoryService.userToTeacher(user),
-              );
+            ? this.studentsService.updatePartial(user.id, user)
+            : this.teachersService.updatePartial(user.id, user);
     }
 
     async findByEmail(email: string): Promise<UserEntity> {

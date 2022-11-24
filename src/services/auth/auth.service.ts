@@ -43,9 +43,12 @@ export class AuthService {
             throw new BadRequestException('Invalid email');
         }
         const newPass = uuid();
-        console.log('new pass: ', newPass);
         user.password = this.usersService.hashPassword(newPass);
-        await this.usersService.update(user);
+        await this.usersService.update({
+            id: user.id,
+            role: user.role,
+            password: user.password,
+        });
 
         await this.mailService.send({
             from: this.configService.get<string>('MAIL_ACCOUNT'),
