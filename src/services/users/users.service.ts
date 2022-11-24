@@ -9,6 +9,7 @@ import { UsersFactoryService } from './users-factory.service';
 
 @Injectable()
 export class UsersService {
+    private readonly saltRounds = 8;
     constructor(
         private teachersService: TeachersService,
         private studentsService: StudentsService,
@@ -30,7 +31,7 @@ export class UsersService {
     }
 
     create(user: UserEntity): Promise<UserEntity> {
-        user.password = bcrypt.hashSync(user.password, 8);
+        user.password = this.hashPassword(user.password);
         return user.role === Role.STUDENT_ROLE
             ? this.studentsService.create(
                   this.usersFactoryService.userToStudent(user),
@@ -40,10 +41,27 @@ export class UsersService {
               );
     }
 
+    update(user: UserEntity): Promise<void> {
+        user.password = this.hashPassword(user.password);
+        return user.role === Role.STUDENT_ROLE
+            ? this.studentsService.update(
+                  user.id,
+                  this.usersFactoryService.userToStudent(user),
+              )
+            : this.teachersService.update(
+                  user.id,
+                  this.usersFactoryService.userToTeacher(user),
+              );
+    }
+
     async findByEmail(email: string): Promise<UserEntity> {
         return this.studentsService.getByEmail(email).catch((err) => {
             if (err instanceof EntityNotFoundError)
                 return this.teachersService.getByEmail(email);
         });
+    }
+
+    hashPassword(pass: string): string {
+        return bcrypt.hashSync(pass, this.saltRounds);
     }
 }

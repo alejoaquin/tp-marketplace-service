@@ -8,3 +8,4 @@ export * from './student.dto';
 export * from './teacher.dto';
 export * from './user.basic.info.dto';
 export * from './user.dto';
+export * from './mail.dto';
