@@ -26,24 +26,11 @@ export class TeachersService {
         return this.teachersRepository.save(teacher);
     }
 
-    async update(id: string, teacher: TeacherEntity): Promise<void> {
-        const entity = await this.teachersRepository.findOneBy({ id: id });
-        entity.firstname = teacher.firstname;
-        entity.lastname = teacher.lastname;
-        entity.title = teacher.title;
-        entity.experience = teacher.experience;
-        entity.phone = teacher.phone;
-        entity.email = teacher.email;
-
-        await this.teachersRepository.save(teacher);
-    }
-
     async updatePartial(
         id: string,
         partial: Partial<TeacherEntity>,
     ): Promise<void> {
-        const result = await this.teachersRepository.update(id, partial);
-        console.log('Updated result: ', result.affected);
+        await this.teachersRepository.update(id, partial);
     }
 
     async delete(id: string): Promise<void> {

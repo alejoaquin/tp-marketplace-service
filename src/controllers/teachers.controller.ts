@@ -39,10 +39,7 @@ export class TeachersController {
         @Param('id') id: string,
         @Body() teacher: TeacherDto,
     ): Promise<void> {
-        return this.teachersService.update(
-            id,
-            this.teachersFactoryService.toEntity(teacher),
-        );
+        return this.teachersService.updatePartial(id, teacher);
     }
 
     @Delete(':id')
