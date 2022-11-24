@@ -38,6 +38,14 @@ export class TeachersService {
         await this.teachersRepository.save(teacher);
     }
 
+    async updatePartial(
+        id: string,
+        partial: Partial<TeacherEntity>,
+    ): Promise<void> {
+        const result = await this.teachersRepository.update(id, partial);
+        console.log('Updated result: ', result.affected);
+    }
+
     async delete(id: string): Promise<void> {
         await this.teachersRepository.delete({ id: id });
     }

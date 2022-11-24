@@ -37,6 +37,14 @@ export class StudentsService {
         await this.studentsRepository.save(student);
     }
 
+    async updatePartial(
+        id: string,
+        partial: Partial<StudentEntity>,
+    ): Promise<void> {
+        const result = await this.studentsRepository.update(id, partial);
+        console.log('Updated result: ', result.affected);
+    }
+
     async delete(id: string): Promise<void> {
         await this.studentsRepository.delete({ id: id });
     }
