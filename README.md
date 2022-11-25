@@ -11,6 +11,20 @@ $ npm install
 $ npm run start
 ```
 
+## Variables de ambiente
+```
+HOST=127.0.0.1
+PORT=4000
+DATABASE_NAME=db_marketplace
+DATABASE_HOST=localhost 
+DATABASE_PORT=3306 
+DATABASE_USERNAME=root 
+DATABASE_PASSWORD=password
+SERVICE_SECRET=secretojwt
+MAIL_PASS=password-mail
+MAIL_ACCOUNT=cuenta-mail
+```
+
 # API documentation
 
 ## Users
