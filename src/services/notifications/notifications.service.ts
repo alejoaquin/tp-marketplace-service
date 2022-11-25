@@ -72,7 +72,7 @@ export class NotificationsService {
     ): Promise<NotificationEntity> {
         const teacher = await inscription.course.then((c) => c.teacher);
         const notification = this.notificationsRepository.create({
-            description: inscription.reason,
+            description: 'Tu inscripción fue aceptada.',
             userId: (await inscription.student).id,
             objectId: inscription.id,
             source: NotificationSource.ACCEPTED_INSCRIPTION,
