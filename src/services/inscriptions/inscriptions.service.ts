@@ -5,6 +5,7 @@ import {
     InscriptionDto,
     InscriptionEntity,
     InscriptionStatus,
+    NotificationSource,
     StudentEntity,
     UpdateInscriptionRequest,
 } from 'src/domain';
@@ -90,8 +91,17 @@ export class InscriptionsService {
         });
 
         if (newState && updateRequest.status == InscriptionStatus.ACCEPTED) {
-            await this.notificationsService.sentAcceptedInscriptionNotification(
+            await this.notificationsService.sentInscriptionUpdateNotification(
                 inscription,
+                NotificationSource.ACCEPTED_INSCRIPTION,
+            );
+        } else if (
+            newState &&
+            updateRequest.status == InscriptionStatus.CANCELLED
+        ) {
+            await this.notificationsService.sentInscriptionUpdateNotification(
+                inscription,
+                NotificationSource.REJECTED_INSCRIPTION,
             );
         }
     }
