@@ -8,7 +8,6 @@ import {
     Put,
 } from '@nestjs/common';
 import { TeacherDto } from 'src/domain';
-import { Public } from 'src/public.decorator';
 import { TeachersFactoryService } from 'src/services/teacher/teachers-factory.service';
 import { TeachersService } from 'src/services/teacher/teachers.service';
 
@@ -27,7 +26,6 @@ export class TeachersController {
         );
     }
 
-    @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<TeacherDto> {
         const entity = await this.teachersService.getById(id);

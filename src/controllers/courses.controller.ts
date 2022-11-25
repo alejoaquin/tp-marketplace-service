@@ -19,7 +19,6 @@ import {
     RatingDto,
     UpdateInscriptionRequest,
 } from 'src/domain';
-import { Public } from 'src/public.decorator';
 import { CommentsFactoryService } from 'src/services/comments/comments.factory.service';
 import { CommentsService } from 'src/services/comments/comments.service';
 import { CoursesFactoryService } from 'src/services/courses/courses.factory.service';
@@ -46,7 +45,6 @@ export class CoursesController {
         private ratingsFactoryService: RatingsFactoryService,
     ) {}
 
-    @Public()
     @Get()
     async getPublished(): Promise<CourseDto[]> {
         const arr = await this.coursesService.getPublished();
@@ -67,7 +65,6 @@ export class CoursesController {
         );
     }
 
-    @Public()
     @Post('search')
     @HttpCode(200)
     async search(
@@ -79,7 +76,6 @@ export class CoursesController {
         );
     }
 
-    @Public()
     @Get(':id')
     async getById(@Param('id') id: string): Promise<CourseDto> {
         const entity = await this.coursesService.getById(id);
@@ -176,7 +172,6 @@ export class CoursesController {
         );
     }
 
-    @Public()
     @Get(':id/comments')
     async getComments(@Param('id') id: string): Promise<CommentDto[]> {
         const entities = await this.commentsService.getByCourse(id);
@@ -222,7 +217,6 @@ export class CoursesController {
         );
     }
 
-    @Public()
     @Get(':id/ratings')
     async getRatings(@Param('id') id: string): Promise<RatingDto[]> {
         const entities = await this.ratingsService.getByCourse(id);

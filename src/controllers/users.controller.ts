@@ -5,7 +5,6 @@ import {
     UserDto,
     UserEntity,
 } from 'src/domain';
-import { Public } from 'src/public.decorator';
 import { NotificationsFactoryService } from 'src/services/notifications/notifications-factory.service';
 import { NotificationsService } from 'src/services/notifications/notifications.service';
 import { UsersFactoryService } from 'src/services/users/users-factory.service';
@@ -32,7 +31,6 @@ export class UsersController {
         return this.usersFactoryService.toDto(entity);
     }
 
-    @Public()
     @Post()
     @HttpCode(201)
     async create(@Body() user: UserEntity): Promise<UserDto> {
