@@ -9,6 +9,7 @@ $ npm install
 ```bash
 # development
 $ npm run start
+```
 
 # API documentation
 
@@ -128,7 +129,8 @@ id
 **Authorization:** Bearer Token <br>
 **Path Variables:**
 `id`
-`Teachers`
+
+## Teachers
 
 ### `PUT` Update Teacher
 
@@ -170,7 +172,8 @@ id
 **Authorization:** Bearer Token <br>
 **Path Variables:**
 `id`
-`Courses`
+
+## Courses
 
 ## Inscriptions
 
@@ -179,8 +182,7 @@ id
 ```http://localhost:3000/courses/:id/inscriptions``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
+**Path Variables:** `id` <br>
 **Body:**   <br>
 
 ```json
@@ -199,9 +201,7 @@ id
 ```http://localhost:3000/courses/:id/inscriptions/:inscriptionId``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
-`inscriptionId`
+**Path Variables:** `id` `inscriptionId` <br>
 **Body:**   <br>
 
 ```json
@@ -231,15 +231,15 @@ id
 **Path Variables:**
 `id`
 `inscriptionId`
-`Ratings`
+
+## Ratings
 
 ### `POST`Rate
 
 ```http://localhost:3000/courses/:id/ratings``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
+**Path Variables:** `id` <br>
 **Body:**   <br>
 
 ```json
@@ -264,9 +264,7 @@ id
 ```http://localhost:3000/courses/:id/ratings/:ratingId``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
-`ratingId`
+**Path Variables:** `id` `ratingId` <br>
 **Body:**   <br>
 
 ```json
@@ -283,8 +281,7 @@ id
 ```http://localhost:3000/courses/:id/comments``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
+**Path Variables:** `id`<br>
 **Body:**   <br>
 
 ```json
@@ -307,9 +304,7 @@ id
 ```http://localhost:3000/courses/:id/comments/:commentId``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
-`commentId`
+**Path Variables:** `id` `commentId` <br>
 **Body:**   <br>
 
 ```json
@@ -333,8 +328,7 @@ id
 ```http://localhost:3000/courses/:id``` <br>
 
 **Authorization:** Bearer Token <br>
-**Path Variables:**
-`id`
+**Path Variables:** `id` <br>
 **Body:**   <br>
 
 ```json
