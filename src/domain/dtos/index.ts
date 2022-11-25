@@ -1,6 +1,8 @@
+export * from './authenticated.user.dto';
 export * from './comment.dto';
 export * from './course.dto';
 export * from './inscription.dto';
+export * from './mail.dto';
 export * from './notification.dto';
 export * from './rating.dto';
 export * from './requests';
@@ -8,4 +10,3 @@ export * from './student.dto';
 export * from './teacher.dto';
 export * from './user.basic.info.dto';
 export * from './user.dto';
-export * from './mail.dto';

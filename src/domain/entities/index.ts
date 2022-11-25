@@ -6,4 +6,5 @@ export * from './notification.entity';
 export * from './rating.entity';
 export * from './student.entity';
 export * from './teacher.entity';
+export * from './token.entity';
 export * from './user.entity';
