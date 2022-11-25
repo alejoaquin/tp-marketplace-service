@@ -67,15 +67,19 @@ export class NotificationsService {
         return this.notificationsRepository.save(notification);
     }
 
-    async sentAcceptedInscriptionNotification(
+    async sentInscriptionUpdateNotification(
         inscription: InscriptionEntity,
+        source: NotificationSource,
     ): Promise<NotificationEntity> {
         const teacher = await inscription.course.then((c) => c.teacher);
         const notification = this.notificationsRepository.create({
-            description: 'Tu inscripción fue aceptada.',
+            description:
+                source === NotificationSource.ACCEPTED_INSCRIPTION
+                    ? 'Tu inscripción fue aceptada.'
+                    : 'Tu inscripción fue rechazada.',
             userId: (await inscription.student).id,
             objectId: inscription.id,
-            source: NotificationSource.ACCEPTED_INSCRIPTION,
+            source: source,
             courseId: (await inscription.course).id,
             senderId: teacher.id,
         });
