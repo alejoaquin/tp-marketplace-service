@@ -148,11 +148,12 @@ export class CoursesController {
     }
 
     @Put(':id/inscriptions/:inscriptionId')
+    @HttpCode(204)
     updateInscriptionById(
         @Param('id') id: string,
         @Param('inscriptionId') inscriptionId: string,
         @Body() updateRequest: UpdateInscriptionRequest,
-    ): Promise<InscriptionDto> {
+    ): Promise<void> {
         return this.inscriptionsService.update(
             inscriptionId,
             id,
