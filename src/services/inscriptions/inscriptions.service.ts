@@ -4,10 +4,12 @@ import {
     EnrollRequest,
     InscriptionDto,
     InscriptionEntity,
+    InscriptionStatus,
     StudentEntity,
     UpdateInscriptionRequest,
 } from 'src/domain';
 import { Repository } from 'typeorm';
+import { NotificationsService } from '../notifications/notifications.service';
 import { InscriptionsFactoryService } from './inscriptions.factory.service';
 
 @Injectable()
@@ -16,6 +18,7 @@ export class InscriptionsService {
         @InjectRepository(InscriptionEntity)
         private inscriptionRepository: Repository<InscriptionEntity>,
         private inscriptionsFactoryService: InscriptionsFactoryService,
+        private notificationsService: NotificationsService,
     ) {}
 
     create(
@@ -66,7 +69,7 @@ export class InscriptionsService {
         id: string,
         courseId: string,
         updateRequest: UpdateInscriptionRequest,
-    ): Promise<InscriptionDto> {
+    ): Promise<void> {
         const inscription = await this.inscriptionRepository.findOne({
             relations: {
                 course: true,
@@ -76,22 +79,20 @@ export class InscriptionsService {
                 course: { id: courseId },
             },
         });
+        const newState = inscription.status != updateRequest.status;
+        await this.inscriptionRepository.update(id, {
+            phone: updateRequest.phone,
+            email: updateRequest.email,
+            reason: updateRequest.reason,
+            timeRangeFrom: updateRequest.timeRangeFrom,
+            timeRangeTo: updateRequest.timeRangeTo,
+            status: updateRequest.status,
+        });
 
-        inscription.phone = updateRequest.phone;
-        inscription.email = updateRequest.email;
-        inscription.reason = updateRequest.reason;
-        inscription.timeRangeFrom = updateRequest.timeRangeFrom;
-        inscription.timeRangeTo = updateRequest.timeRangeTo;
-
-        if (inscription.status != updateRequest.status) {
-            inscription.status = updateRequest.status;
+        if (newState && updateRequest.status == InscriptionStatus.ACCEPTED) {
+            await this.notificationsService.sentAcceptedInscriptionNotification(
+                inscription,
+            );
         }
-
-        return this.save(inscription);
-    }
-
-    private async save(entity: InscriptionEntity): Promise<InscriptionDto> {
-        const inscription = await this.inscriptionRepository.save(entity);
-        return this.inscriptionsFactoryService.toDto(inscription);
     }
 }
