@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+    AuthenticatedUserDto,
     StudentEntity,
     TeacherEntity,
     UserBasicInfoDto,
@@ -62,6 +63,14 @@ export class UsersFactoryService {
 
     toBasicDto(entity: UserEntity): UserBasicInfoDto {
         const dto = new UserBasicInfoDto();
+        dto.id = entity.id;
+        dto.firstname = entity.firstname;
+        dto.lastname = entity.lastname;
+        return dto;
+    }
+
+    toAuthenticatedUser(entity: UserEntity): AuthenticatedUserDto {
+        const dto = new AuthenticatedUserDto();
         dto.id = entity.id;
         dto.firstname = entity.firstname;
         dto.lastname = entity.lastname;

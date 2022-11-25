@@ -7,7 +7,6 @@ import { TokenModule } from '../token/token.module';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { LocalStrategy } from './local.strategy';
 
 @Module({
     imports: [
@@ -17,6 +16,7 @@ import { LocalStrategy } from './local.strategy';
             imports: [ConfigModule],
             useFactory: async (configService: ConfigService) => ({
                 secret: configService.get<string>('SERVICE_SECRET'),
+                signOptions: { expiresIn: '1d' },
             }),
             inject: [ConfigService],
         }),
@@ -24,7 +24,7 @@ import { LocalStrategy } from './local.strategy';
         MailModule,
     ],
 
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, JwtStrategy],
     exports: [AuthService],
 })
 export class AuthModule {}

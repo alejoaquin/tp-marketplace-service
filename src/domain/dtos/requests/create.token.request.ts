@@ -1,6 +1,6 @@
 import { IsDateString, IsString } from 'class-validator';
 
-export class CreateUserTokenRequest {
+export class CreateTokenRequest {
     @IsString()
     id: string;
     @IsString()

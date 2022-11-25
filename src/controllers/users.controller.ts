@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    Param,
+    Post,
+    UseGuards,
+    ValidationPipe,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
     NotificationDto,
     NotificationEntity,
@@ -20,6 +30,7 @@ export class UsersController {
     ) {}
 
     @Get()
+    @UseGuards(AuthGuard())
     async getAll(): Promise<UserDto[]> {
         const arr = await this.usersService.getAll();
         return Promise.all(arr.map((u) => this.usersFactoryService.toDto(u)));
@@ -33,7 +44,9 @@ export class UsersController {
 
     @Post()
     @HttpCode(201)
-    async create(@Body() user: UserEntity): Promise<UserDto> {
+    async create(
+        @Body(new ValidationPipe()) user: UserEntity,
+    ): Promise<UserDto> {
         const entity = await this.usersService.create(
             this.usersFactoryService.toEntity(user),
         );

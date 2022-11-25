@@ -1,14 +1,27 @@
-import { Body, Controller, HttpCode, Post, Request } from '@nestjs/common';
-import { ForgotPasswordRequest } from 'src/domain';
+import {
+    Body,
+    Controller,
+    HttpCode,
+    Post,
+    Request,
+    ValidationPipe,
+} from '@nestjs/common';
+import {
+    AuthenticatedUserDto,
+    ForgotPasswordRequest,
+    SignInRequest,
+} from 'src/domain';
 import { AuthService } from 'src/services/auth/auth.service';
 
 @Controller()
 export class AppController {
     constructor(private authService: AuthService) {}
 
-    @Post('login')
-    async login(@Request() req) {
-        return this.authService.login(req.user);
+    @Post('/signIn')
+    async signIn(
+        @Body(new ValidationPipe()) signInDto: SignInRequest,
+    ): Promise<AuthenticatedUserDto> {
+        return await this.authService.login(signInDto);
     }
 
     @Post('/forgotPassword')
